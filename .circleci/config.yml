@@ -49,6 +49,7 @@ jobs:
             - build/
             - config/
             - node_modules/
+            - package/
             - src/
             - package.json
             - tsconfig.json
