@@ -83,7 +83,7 @@ class App extends PureComponent<Props, State> {
               <Switch location={route.location}>{this.generateRoutes()}</Switch>
             </CSSTransition>
           </StyledBody>
-          <Footer/>
+          <Footer onSettingsButtonClick={() => {}}/>
         </StyledRoot>
       </ThemeProvider>
     );
