@@ -1,6 +1,6 @@
 {
   "name": "flight-monitoring-test",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Quick hack job of a flight monitoring test",
   "private": true,
   "license": "MIT",
@@ -45,6 +45,7 @@
     "happypack": "^5.0.0",
     "html-webpack-plugin": "^3.2.0",
     "image-webpack-loader": "^4.5.0",
+    "interactjs": "^1.3.4",
     "lodash": "^4.17.11",
     "prerender-spa-plugin": "^3.4.0",
     "promptu": "^0.32.0",

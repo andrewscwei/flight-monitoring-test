@@ -2,5 +2,12 @@
   "description": "Flight monitoring test",
   "not-found": "This page does not exist",
   "not-found-title": "404",
-  "game-over": "Game over"
+  "game-over": "Game over",
+  "settings": "Settings",
+  "timer": "Timer",
+  "questions": "Questions",
+  "delay": "Delay",
+  "speed": "Speed",
+  "aircraft-count": "Number of aircrafts",
+  "done": "Number of aircrafts"
 }

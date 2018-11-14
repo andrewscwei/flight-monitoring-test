@@ -1,3 +1,4 @@
+import { NumberRange } from '@/components/HRangeSlider';
 import Viewport from '@/components/Viewport';
 import { AppState } from '@/store';
 import theme from '@/styles/theme';
@@ -6,7 +7,6 @@ import debug from 'debug';
 import _ from 'lodash';
 import promptu from 'promptu';
 import React, { createRef, Fragment, PureComponent } from 'react';
-import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { Action, bindActionCreators, Dispatch } from 'redux';
 import styled from 'styled-components';
@@ -21,32 +21,38 @@ interface DispatchProps {
 
 }
 
-interface OwnProps {
+export interface Props extends StateProps, DispatchProps {
 
 }
 
-export interface Props extends StateProps, DispatchProps, OwnProps {}
-
 export interface State {
-
+  areSettingsVisible: boolean;
+  currAnswer: number;
+  index: number;
+  totalQuestions: number;
+  numChoices: number;
+  difficulty: number;
+  aircraftCount: NumberRange;
+  timer: number;
+  correct: number;
 }
 
 class Home extends PureComponent<Props, State> {
   state = {
-    answer: 10,
-    index: 0,
-    totalQuestions: 10,
-    maxChoices: 5,
-    currModifier: 10,
-    minModifier: 4,
-    maxModifier: 20,
+    areSettingsVisible: false,
+    currAnswer: 10,
+    index: -1,
+    totalQuestions: 15,
+    numChoices: 5,
+    difficulty: 8,
+    aircraftCount: [4, 20] as NumberRange,
     timer: 10 * 1000,
     correct: 0,
   };
 
   nodeRefs = {
-    root: createRef(),
-    timer: createRef(),
+    root: createRef<HTMLDivElement>(),
+    timer: createRef<HTMLDivElement>(),
   };
 
   interval?: NodeJS.Timeout;
@@ -64,19 +70,37 @@ class Home extends PureComponent<Props, State> {
     }
   }
 
-  next = () => {
-    log('next');
+  openSettings = () => {
+    this.setState({ areSettingsVisible: true });
+  }
 
+  closeSettings = () => {
+    this.setState({ areSettingsVisible: false });
+  }
+
+  updateSettings = () => {
+
+  }
+
+  clearTimer = () => {
     const timerRef = this.nodeRefs.timer.current;
+
+    if (!timerRef) return;
 
     if (this.interval) {
       anime.remove(timerRef);
       clearInterval(this.interval);
     }
+  }
 
-    if (this.state.index > this.state.totalQuestions) return;
+  startTimer = () => {
+    this.clearTimer();
 
-    this.interval = setInterval(() => this.wrong(), this.state.timer);
+    const timerRef = this.nodeRefs.timer.current;
+
+    if (!timerRef) return;
+
+    this.interval = setInterval(() => this.handleWrongAnswer(), this.state.timer);
 
     anime({
       targets: this.nodeRefs.timer.current,
@@ -84,84 +108,113 @@ class Home extends PureComponent<Props, State> {
       easing: 'linear',
       duration: this.state.timer,
     });
+  }
+
+  next = () => {
+    log('Next question');
+
+    this.clearTimer();
+
+    if ((this.state.index + 1) < this.state.totalQuestions) {
+      this.startTimer();
+    }
 
     this.setState({
-      answer: this.generateAnswer(),
+      currAnswer: this.generateAnswer(),
       index: this.state.index + 1,
     });
   }
 
-  correct = () => {
+  handleCorrectAnswer = () => {
     log('Bingo!');
 
     anime({
       targets: document.body,
-      backgroundColor: ['#0f941c', theme.backgroundColor],
+      backgroundColor: [theme.correctBackbroundColor, theme.backgroundColor],
       duration: 1000,
       easing: 'easeOutCubic',
     });
 
     this.setState({
-      currModifier: _.clamp(this.state.currModifier + _.random(1, 3), this.state.minModifier, this.state.maxModifier),
       correct: this.state.correct + 1,
     });
 
+    this.increaseDifficulty();
     this.next();
   }
 
-  wrong = () => {
-    log('Wrong answer received');
+  handleWrongAnswer = () => {
+    log('Wrong :(');
 
     anime({
       targets: document.body,
-      backgroundColor: ['#940f0f', theme.backgroundColor],
+      backgroundColor: [theme.incorrectBackgroundColor, theme.backgroundColor],
       duration: 1000,
       easing: 'easeOutCubic',
     });
 
-    this.setState({
-      currModifier: _.clamp(this.state.currModifier - _.random(1, 3), this.state.minModifier, this.state.maxModifier),
-    });
-
+    this.decreaseDifficulty();
     this.next();
   }
 
-  generateAnswer = (): number => {
-    return _.random(this.state.minModifier, _.random(this.state.currModifier - _.random(1, 3), this.state.currModifier + _.random(1, 3)), false);
+  increaseDifficulty = () => {
+    this.setState({
+      difficulty: this.state.difficulty + 1,
+    });
   }
 
-  generateAnswers = (): number[] => {
-    const d = 5;
-    const r = _.random(0, d - 1, false);
-    const o = [];
+  decreaseDifficulty = () => {
+    this.setState({
+      difficulty: this.state.difficulty - 1,
+    });
+  }
 
-    for (let i = 0; i <= d; i++) {
-      o.push(this.state.answer - (r - i));
+  generateAnswer = (): number => {
+    const d = this.state.difficulty;
+    const t = _.random(d - 5, d + 5, false);
+    const [min, max] = this.state.aircraftCount;
+
+    return _.clamp(t, min, max);
+  }
+
+  generateChoices = (): number[] => {
+    const num = this.state.numChoices;
+    const idx = _.random(0, num - 1, false);
+    const ans = [];
+
+    for (let i = 0; i < num; i++) {
+      ans.push(this.state.currAnswer - (idx - i));
     }
 
-    return o;
+    while (ans[0] <= 0) {
+      const a: number = ans[ans.length - 1];
+      ans.shift();
+      ans.push(a + 1);
+    }
+
+    return ans;
   }
 
-  selectAnswer = (answer: number) => {
-    log(`Selected answer ${answer}`);
+  chooseAnswer = (answer: number) => {
+    log(`Chose answer: ${answer}`);
 
-    if (answer === this.state.answer) {
-      this.correct();
+    if (answer === this.state.currAnswer) {
+      this.handleCorrectAnswer();
     }
     else {
-      this.wrong();
+      this.handleWrongAnswer();
     }
   }
 
-  renderAnswers() {
-    const answers = this.generateAnswers();
+  renderChoices() {
+    const answers = this.generateChoices();
 
     return (
       <StyledAnswers>
-        { Array.from(Array(this.state.maxChoices).keys()).map((v, i) => (
+        { Array.from(Array(this.state.numChoices).keys()).map((v, i) => (
           <button
             key={`answer${i}`}
-            onClick={() => this.selectAnswer(answers[i])}
+            onClick={() => this.chooseAnswer(answers[i])}
           >
             {answers[i]}
           </button>
@@ -174,16 +227,13 @@ class Home extends PureComponent<Props, State> {
     const { t } = this.props;
 
     return (
-      <StyledRoot ref={this.nodeRefs.root as any}>
-        <Helmet>
-          <title>{t['home']}</title>
-        </Helmet>
-        { this.state.index <= this.state.totalQuestions &&
+      <StyledRoot ref={this.nodeRefs.root}>
+        { this.state.index < this.state.totalQuestions &&
           <Fragment>
-            <StyledTimer ref={this.nodeRefs.timer as any}/>
+            <StyledTimer ref={this.nodeRefs.timer}/>
             <StyledViewport
               key={this.state.index}
-              count={this.state.answer}
+              count={this.state.currAnswer}
               dotRadius={10}
               radius={200}
               minDuration={1.5}
@@ -191,13 +241,13 @@ class Home extends PureComponent<Props, State> {
               minDelay={0.1}
               maxDelay={.5}
             />
-            {this.renderAnswers()}
+            {this.renderChoices()}
           </Fragment>
           ||
           <Fragment>
             <StyledGameOver>
               <h1>{t['game-over']}</h1>
-              <h2>{this.state.correct}</h2>
+              <h2>{this.state.correct} / {this.state.totalQuestions}</h2>
             </StyledGameOver>
           </Fragment>
         }
@@ -242,10 +292,11 @@ const StyledGameOver = styled.div`
 
 const StyledTimer = styled.div`
   ${promptu.align.ftl}
-  height: 2px;
+  height: 5px;
   width: 100%;
   background: #fff;
   transform-origin: center left;
+  transform: translate3d(0, 0, 0);
 `;
 
 const StyledAnswers = styled.div`
