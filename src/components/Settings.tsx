@@ -96,17 +96,17 @@ class Settings extends PureComponent<Props, State> {
           { Object.keys(config).map((optionType: string, idx: number) => (
             <div key={`option-${idx}`}>
               <h2>{t[optionType]}</h2>
-              { config[optionType].type === SettingsOptionInputType.RANGE &&
+              { config[optionType as SettingsOptionType].type === SettingsOptionInputType.RANGE &&
                 <HRangeSlider
-                  onRangeChange={(range: NumberRange) => this.onRangeChangeForOptionType(config[optionType].slug, range)}
+                  onRangeChange={(range: NumberRange) => this.onRangeChangeForOptionType(config[optionType as SettingsOptionType].slug, range)}
                 />
               }
-              { config[optionType].type === SettingsOptionInputType.SELECT &&
+              { config[optionType as SettingsOptionType].type === SettingsOptionInputType.SELECT &&
                 <select
                   onChange={(event: ChangeEvent<HTMLSelectElement>) => this.onSelectionChangeForOptionType(optionType as SettingsOptionType, Number(event.target.value)) }
                   value={this.state.options[optionType as SettingsOptionType]}
                 >
-                  { config[optionType].values.map((val: number) => (
+                  { config[optionType as SettingsOptionType].values.map((val: number) => (
                     <option value={val} key={`${optionType}-${val}`}>{val}</option>
                   ))}
                 </select>
