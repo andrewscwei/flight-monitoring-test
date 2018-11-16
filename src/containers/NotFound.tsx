@@ -65,7 +65,7 @@ const StyledRoot = styled.div`
   width: 100%;
 
   h1 {
-    color: ${props => props.theme.titleColor};
+    color: #fff;
     font-size: 2.4em;
     font-weight: 700;
     letter-spacing: 3px;

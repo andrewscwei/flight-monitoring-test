@@ -2,9 +2,10 @@ import { css } from 'styled-components';
 
 export default {
   backgroundColor: '#0f0e13',
-  correctBackbroundColor: '#0f941c',
+  correctBackbroundColor: '#1ace09',
   incorrectBackgroundColor: '#940f0f',
-  titleColor: '#fff',
+  greenColor: '#1ace09',
+  purpleColor: '#3e0098',
   title: (sizeInPixels = 16, weight = 400, lineHeight = sizeInPixels * 1.4, letterSpacing = sizeInPixels * .1) => css`
     font-family: Roboto;
     font-size: ${(sizeInPixels || 16) / 10}rem;

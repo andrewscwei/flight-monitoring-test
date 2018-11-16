@@ -70,14 +70,17 @@ class Home extends PureComponent<Props, State> {
   openSettings = () => {
     this.setState({ areSettingsVisible: true });
 
-    if (this.state.index < this.state.settings['num-questions']) {
+    if (!this.state.isGameOver) {
       this.reset();
     }
   }
 
   closeSettings = () => {
     this.setState({ areSettingsVisible: false });
-    this.retry();
+
+    if (!this.state.isGameOver) {
+      this.next();
+    }
   }
 
   updateSettings = (options: SettingsOptions) => {
@@ -122,33 +125,24 @@ class Home extends PureComponent<Props, State> {
     });
   }
 
-  reset = () => {
+  reset = (isGameOver: boolean = false) => {
     this.clearTimer();
 
     this.setState({
+      isGameOver,
       currAnswer: 0,
       index: -1,
     });
   }
 
-  retry = () => {
-    this.setState({
-      isGameOver: false,
-    });
-
-    this.reset();
-    this.next();
-  }
-
   next = () => {
-    this.clearTimer();
-
     if ((this.state.index + 1) < this.state.settings['num-questions']) {
       log('Next question');
 
       this.startTimer();
 
       this.setState({
+        isGameOver: false,
         currAnswer: this.generateAnswer(),
         index: this.state.index + 1,
       });
@@ -156,16 +150,14 @@ class Home extends PureComponent<Props, State> {
     else {
       log('Game over');
 
-      this.reset();
-
-      this.setState({
-        isGameOver: true,
-      });
+      this.reset(true);
     }
   }
 
   handleCorrectAnswer = () => {
     log('Bingo!');
+
+    anime.remove(document.body);
 
     anime({
       targets: document.body,
@@ -184,6 +176,8 @@ class Home extends PureComponent<Props, State> {
 
   handleWrongAnswer = () => {
     log('Wrong :(');
+
+    anime.remove(document.body);
 
     anime({
       targets: document.body,
@@ -266,18 +260,18 @@ class Home extends PureComponent<Props, State> {
 
     return (
       <StyledRoot ref={this.nodeRefs.root}>
+        <StyledTimer ref={this.nodeRefs.timer} isEnabled={!this.state.isGameOver}/>
         { this.state.isGameOver &&
           <Fragment>
             <StyledGameOver>
               <h1>{t['game-over']}</h1>
               <h2><strong>{this.state.correct}</strong> / {this.state.settings['num-questions']}</h2>
-              <button onClick={() => this.retry()}>{t['retry']}</button>
+              <button onClick={() => this.next()}>{t['retry']}</button>
             </StyledGameOver>
           </Fragment>
           ||
           <Fragment>
             <StyledQuestionLabel>{this.state.index > -1 ? `${this.state.index + 1}` : ''}</StyledQuestionLabel>
-            <StyledTimer ref={this.nodeRefs.timer}/>
             <StyledViewport
               key={this.state.index}
               count={this.state.currAnswer}
@@ -340,7 +334,7 @@ const StyledQuestionLabel = styled.span`
   width: 100%;
   height: 100%;
   color: #fff;
-  opacity: .05;
+  opacity: .02;
 `;
 
 const StyledGameOver = styled.div`
@@ -371,23 +365,24 @@ const StyledGameOver = styled.div`
     width: 15rem;
     height: 4rem;
     padding: 0 1rem;
-    color: #000;
+    color: #fff;
     transition: background .2s ease-out;
     text-align: center;
-    background: #fff;
+    background: ${props => props.theme.purpleColor};
 
     &:hover {
-      background: #ccc;
+      background: ${props => props.theme.greenColor};
     }
   }
 `;
 
-const StyledTimer = styled.div`
+const StyledTimer = styled.div<any>`
   ${promptu.align.ftl}
   height: 5px;
   width: 100%;
   background: #fff;
   transform-origin: center left;
+  visibility: ${props => props.isEnabled ? 'visible' : 'hidden'};
 `;
 
 const StyledChoices = styled.div`
@@ -400,11 +395,11 @@ const StyledChoice = styled.button<any>`
   ${promptu.container.fhcc}
   ${props => props.theme.text(22, 700)}
   padding: .1rem 0 0 .1rem;
-  width: 4rem;
-  height: 4rem;
+  width: 5rem;
+  height: 5rem;
   overflow: hidden;
   border-radius: 4rem;
-  background: #000;
+  background: ${props => props.theme.purpleColor};
   color: #fff;
   transition-property: background, opacity, transform;
   transition-duration: .2s;
@@ -413,7 +408,7 @@ const StyledChoice = styled.button<any>`
   opacity: ${props => styleByTransitionState(props.transitionState, 0, 1, 1, 0)};
 
   &:hover {
-    background: #222;
+    background: ${props => props.theme.greenColor};
   }
 
   &:not(:last-child) {
