@@ -355,7 +355,7 @@ const StyledOverlay = styled.div<any>`
 const StyledSettings = styled(Settings)<any>`
   opacity: ${props => styleByTransitionState(props.transitionState, 0, 1, 1, 0)};
   z-index: 100;
-  transform: scale(${props => styleByTransitionState(props.transitionState, 1.2, 1, 1, 1.2)}) translate3d(0,0, 0);
+  transform: scale(${props => styleByTransitionState(props.transitionState, 1.2, 1, 1, 1.2)}) translate3d(0, 0, 0);
   transform-origin: center;
   transition-property: opacity, transform;
   transition-duration: .2s;
@@ -449,9 +449,11 @@ const StyledChoice = styled.button<any>`
   transform: translate3d(0, ${props => styleByTransitionState(props.transitionState, 10, 0, 0, -10)}px, 0);
   opacity: ${props => styleByTransitionState(props.transitionState, 0, 1, 1, 0)};
 
-  &:hover {
-    background: ${props => props.theme.greenColor};
-  }
+  ${props => promptu.media.gttablet`
+    &:hover {
+      background: ${props.theme.greenColor};
+    }
+  `}
 
   &:not(:last-child) {
     margin-right: 1.5rem;

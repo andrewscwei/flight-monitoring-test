@@ -177,7 +177,6 @@ const StyledRoot = styled.div`
   width: 100%;
   height: 100%;
   padding: 5rem 3rem;
-  touch-action: none;
   overflow-x: hidden;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
