@@ -90,7 +90,7 @@ class Viewport extends PureComponent<Props, State> {
 
   getRandomDelay = (): number => {
     const modifier = (this.props.speed - (defaultOptions['speed'] / 2)) * .02;
-    const min = .1 - modifier;
+    const min = .3 - modifier;
     const max = .5 - modifier;
 
     return _.random(min, max, true) * 1000;
@@ -98,8 +98,8 @@ class Viewport extends PureComponent<Props, State> {
 
   getRandomDuration = (): number => {
     const modifier = (this.props.speed - (defaultOptions['speed'] / 2)) * .15;
-    const min = 1.3 - modifier;
-    const max = 1.7 - modifier;
+    const min = 1.4 - modifier;
+    const max = 1.6 - modifier;
 
     return _.random(min, max, true) * 1000;
   }
