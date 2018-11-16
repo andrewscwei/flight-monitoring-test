@@ -2,7 +2,6 @@
  * @file Client app root.
  */
 
-import Footer from '@/components/Footer';
 import { AppState } from '@/store';
 import { changeLocale } from '@/store/intl';
 import globalStyles from '@/styles/global';
@@ -83,7 +82,6 @@ class App extends PureComponent<Props, State> {
               <Switch location={route.location}>{this.generateRoutes()}</Switch>
             </CSSTransition>
           </StyledBody>
-          <Footer onSettingsButtonClick={() => {}}/>
         </StyledRoot>
       </ThemeProvider>
     );

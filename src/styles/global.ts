@@ -8,8 +8,8 @@ export default css`
   html,
   body {
     background: ${theme.backgroundColor};
-    font-family: 'Roboto', sans-serif;
     height: 100%;
     width: 100%;
+    overflow: hidden;
   }
 `;

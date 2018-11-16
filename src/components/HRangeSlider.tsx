@@ -8,23 +8,25 @@ export interface Props {
   className?: string;
   decimalPlaces: number;
   defaultRange: NumberRange;
+  gutterStyle?: Styles;
+  isMaxAdjustable: boolean;
+  isMinAdjustable: boolean;
   max: number;
   min: number;
   knobPadding: number;
   knobRadius: number;
   labelStyle?: Styles;
-  onRangeChange: (range: NumberRange) => void;
   steps: number;
   style?: Styles;
   tintColor: string;
-  gutterStyle?: Styles;
+  onRangeChange: (range: NumberRange) => void;
 }
 
 export interface State {
   range: NumberRange;
   isDraggingLeftKnob: boolean;
-  isReleasingLeftKnob: boolean;
   isDraggingRightKnob: boolean;
+  isReleasingLeftKnob: boolean;
   isReleasingRightKnob: boolean;
 }
 
@@ -33,13 +35,15 @@ export default class HRangeSlider extends PureComponent<Props, State> {
     decimalPlaces: 2,
     knobPadding: 20,
     knobRadius: 10,
+    isMaxAdjustable: true,
+    isMinAdjustable: true,
     max: 10,
     min: 0,
     labelStyle: {},
-    onRangeChange: () => {},
     steps: -1,
     style: {},
     tintColor: '#fff',
+    onRangeChange: () => {},
   };
 
   nodeRefs = {
@@ -61,6 +65,7 @@ export default class HRangeSlider extends PureComponent<Props, State> {
   }
 
   componentDidMount() {
+    const rootRef = this.nodeRefs.root.current;
     const lknobRef = this.nodeRefs.lknob.current;
     const rknobRef = this.nodeRefs.rknob.current;
 
@@ -85,12 +90,22 @@ export default class HRangeSlider extends PureComponent<Props, State> {
     this.componentDidUpdate({} as any, {} as any);
     this.snapToClosestBreakpoint();
     this.forceUpdate();
+
+    window.addEventListener('resize', this.onWindowResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onWindowResize);
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
     if (!this.areRangesEqual(prevState.range, this.state.range)) {
       this.props.onRangeChange(this.state.range);
     }
+  }
+
+  onWindowResize = () => {
+    this.forceUpdate();
   }
 
   areRangesEqual = (range1: NumberRange, range2: NumberRange): boolean => {
@@ -104,7 +119,7 @@ export default class HRangeSlider extends PureComponent<Props, State> {
   getWidth = (): number => {
     const rootRef = this.nodeRefs.root.current as HTMLElement;
     if (!rootRef) return 0;
-    return rootRef.getBoundingClientRect().width;
+    return rootRef.clientWidth;
   }
 
   getPositionByValue = (value: number): number => {
@@ -270,6 +285,7 @@ export default class HRangeSlider extends PureComponent<Props, State> {
           radius={this.props.knobRadius}
           tintColor={this.props.tintColor}
           padding={this.props.knobPadding}
+          isHidden={!this.props.isMinAdjustable}
           isDragging={this.state.isDraggingLeftKnob}
           isReleasing={this.state.isReleasingLeftKnob}
           isDisabled={(this.state.range[1] === this.props.min) && (this.state.range[0] === this.props.min)}
@@ -282,6 +298,7 @@ export default class HRangeSlider extends PureComponent<Props, State> {
           knobPadding={this.props.knobPadding}
           isDragging={this.state.isDraggingLeftKnob}
           isReleasing={this.state.isReleasingLeftKnob}
+          tintColor={this.props.tintColor}
           style={{
             transform: `translate3d(calc(-50% + ${this.getDisplacementByValue(this.state.range[0])}px), 0, 0)`,
             ...this.props.labelStyle,
@@ -299,10 +316,11 @@ export default class HRangeSlider extends PureComponent<Props, State> {
           }}
         />
         <StyledKnob
-          innerRef={this.nodeRefs.rknob}
+          ref={this.nodeRefs.rknob}
           radius={this.props.knobRadius}
           tintColor={this.props.tintColor}
           padding={this.props.knobPadding}
+          isHidden={!this.props.isMaxAdjustable}
           isDragging={this.state.isDraggingRightKnob}
           isReleasing={this.state.isReleasingRightKnob}
           isDisabled={(this.state.range[1] === this.props.max) && (this.state.range[0] === this.props.max)}
@@ -315,6 +333,7 @@ export default class HRangeSlider extends PureComponent<Props, State> {
           knobPadding={this.props.knobPadding}
           isDragging={this.state.isDraggingLeftKnob || this.state.isDraggingRightKnob}
           isReleasing={this.state.isReleasingLeftKnob || this.state.isReleasingRightKnob}
+          tintColor={this.props.tintColor}
           style={{
             transform: `translate3d(calc(-50% + ${this.getDisplacementByValue(this.state.range[1])}px), 0, 0)`,
             ...this.props.labelStyle,
@@ -341,10 +360,10 @@ const StyledHighlight = styled.div<any>`
 const StyledLabel = styled.span<any>`
   top: ${props => 10 + props.knobRadius}px;
   left: 0;
+  color: ${props => props.tintColor};
   background: transparent;
   text-align: center;
   position: absolute;
-  pointer-events: none;
   user-select: none;
   transition-property: ${props => props.isReleasing ? 'opacity, transform' : 'opacity'};
   transition-duration: 150ms;
@@ -362,7 +381,7 @@ const StyledKnob = styled.div<any>`
   width: ${props => (props.radius + props.padding) * 2}px;
   height: ${props => (props.radius + props.padding) * 2}px;
   background: transparent;
-  pointer-events: ${props => props.isDisabled ? 'none' : 'auto'};
+  visibility: ${props => props.isHidden ? 'hidden' : (props.isDisabled ? 'hidden' : 'visible') };
   transition-property: ${props => props.isReleasing ? 'opacity, transform' : 'opacity'};
   transition-duration: 150ms;
   transition-timing-function: ease-out;

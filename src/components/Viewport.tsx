@@ -28,23 +28,18 @@ class Viewport extends PureComponent<Props, State> {
   };
 
   componentDidMount() {
-    this.componentDidUpdate({}, {});
+    this.reshuffle();
   }
 
   componentWillUnmount() {
-    const root = this.nodeRefs.root.current as HTMLElement;
-
-    if (!root) return;
-
-    const dots = root.querySelectorAll('div');
-    const n = dots.length;
-
-    for (let i = 0; i < n; i++) {
-      anime.remove(dots[i]);
-    }
+    this.stopShuffling();
   }
 
-  componentDidUpdate(prevProps: any, prevState: any) {
+  componentWillUpdate() {
+    this.stopShuffling();
+  }
+
+  componentDidUpdate(prevProps: Props, prevState: State) {
     if (prevProps.count !== this.props.count) {
       this.reshuffle();
     }
@@ -55,11 +50,28 @@ class Viewport extends PureComponent<Props, State> {
 
     if (!root) return;
 
+    log('Reshuffling...');
+
     const dots = root.querySelectorAll('div');
     const n = dots.length;
 
     for (let i = 0; i < n; i++) {
       this.shuffleDot(dots[i]);
+    }
+  }
+
+  stopShuffling = () => {
+    const root = this.nodeRefs.root.current as HTMLElement;
+
+    if (!root) return;
+
+    log('Stopping shuffling...');
+
+    const dots = root.querySelectorAll('div');
+    const n = dots.length;
+
+    for (let i = 0; i < n; i++) {
+      anime.remove(dots[i]);
     }
   }
 
@@ -70,6 +82,7 @@ class Viewport extends PureComponent<Props, State> {
       targets: dot,
       translateX: [from[0], to[0]],
       translateY: [from[1], to[1]],
+      translateZ: 0,
       easing: 'easeOutCubic',
       delay: _.random(this.props.minDelay, this.props.maxDelay, true) * 1000,
       duration: _.random(this.props.minDuration, this.props.maxDuration, true) * 1000,
@@ -111,6 +124,7 @@ const StyledRoot = styled.div<any>`
   width: ${props => props.radius * 2}px;
   border-radius: ${props => props.radius * 2}px;
   overflow: hidden;
+  transform: translate3d(0, 0, 0);
   background: #fff;
 `;
 
@@ -122,6 +136,7 @@ const StyledDot = styled.div<any>`
   border-radius: ${props => props.radius * 2}px;
   left: calc(50% - ${props => props.radius}px);
   top: calc(50% - ${props => props.radius}px);
+  transform: translate3d(0, 0, 0);
   position: absolute;
 `;
 

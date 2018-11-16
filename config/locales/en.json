@@ -8,6 +8,12 @@
   "questions": "Questions",
   "delay": "Delay",
   "speed": "Speed",
-  "aircraft-count": "Number of aircrafts",
-  "done": "Number of aircrafts"
+  "aircraft-count": "Aircraft count range",
+  "num-choices": "Number of choices",
+  "num-questions": "Number of questions",
+  "answer-feedback": "Show answer feedback",
+  "yes": "Yes",
+  "no": "No",
+  "done": "Done",
+  "retry": "Retry"
 }

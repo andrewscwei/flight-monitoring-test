@@ -1,13 +1,17 @@
-import { NumberRange } from '@/components/HRangeSlider';
+import Footer from '@/components/Footer';
+import Settings, { defaultOptions, SettingsOptions } from '@/components/Settings';
 import Viewport from '@/components/Viewport';
 import { AppState } from '@/store';
 import theme from '@/styles/theme';
+import { styleByTransitionState } from '@/styles/utils';
 import anime from 'animejs';
 import debug from 'debug';
 import _ from 'lodash';
 import promptu from 'promptu';
 import React, { createRef, Fragment, PureComponent } from 'react';
 import { connect } from 'react-redux';
+import { Transition } from 'react-transition-group';
+import { TransitionStatus } from 'react-transition-group/Transition';
 import { Action, bindActionCreators, Dispatch } from 'redux';
 import styled from 'styled-components';
 
@@ -29,24 +33,22 @@ export interface State {
   areSettingsVisible: boolean;
   currAnswer: number;
   index: number;
-  totalQuestions: number;
+  isGameOver: boolean;
   numChoices: number;
   difficulty: number;
-  aircraftCount: NumberRange;
-  timer: number;
   correct: number;
+  settings: SettingsOptions;
 }
 
 class Home extends PureComponent<Props, State> {
   state = {
     areSettingsVisible: false,
-    currAnswer: 10,
+    currAnswer: 0,
     index: -1,
-    totalQuestions: 15,
+    isGameOver: false,
     numChoices: 5,
     difficulty: 8,
-    aircraftCount: [4, 20] as NumberRange,
-    timer: 10 * 1000,
+    settings: defaultOptions,
     correct: 0,
   };
 
@@ -55,31 +57,38 @@ class Home extends PureComponent<Props, State> {
     timer: createRef<HTMLDivElement>(),
   };
 
-  interval?: NodeJS.Timeout;
+  interval?: number;
 
   componentDidMount() {
-    this.next();
+    if (!this.state.areSettingsVisible) this.next();
   }
 
   componentWillUnmount() {
-    const timerRef = this.nodeRefs.timer.current;
-
-    if (this.interval) {
-      anime.remove(timerRef);
-      clearInterval(this.interval);
-    }
+    this.clearTimer();
   }
 
   openSettings = () => {
     this.setState({ areSettingsVisible: true });
+
+    if (this.state.index < this.state.settings['num-questions']) {
+      this.reset();
+    }
   }
 
   closeSettings = () => {
     this.setState({ areSettingsVisible: false });
+    this.retry();
   }
 
-  updateSettings = () => {
+  updateSettings = (options: SettingsOptions) => {
+    log(`Settings changed: ${JSON.stringify(options, undefined, 0)}`);
 
+    this.setState({
+      settings: {
+        ...this.state.settings,
+        ...options,
+      },
+    });
   }
 
   clearTimer = () => {
@@ -89,7 +98,7 @@ class Home extends PureComponent<Props, State> {
 
     if (this.interval) {
       anime.remove(timerRef);
-      clearInterval(this.interval);
+      window.clearInterval(this.interval);
     }
   }
 
@@ -100,29 +109,59 @@ class Home extends PureComponent<Props, State> {
 
     if (!timerRef) return;
 
-    this.interval = setInterval(() => this.handleWrongAnswer(), this.state.timer);
+    const t = this.state.settings['timer'] * 1000;
+
+    this.interval = window.setInterval(() => this.handleWrongAnswer(), t);
 
     anime({
       targets: this.nodeRefs.timer.current,
       scaleX: [1, 0],
+      translateZ: 0,
       easing: 'linear',
-      duration: this.state.timer,
+      duration: t,
     });
   }
 
-  next = () => {
-    log('Next question');
-
+  reset = () => {
     this.clearTimer();
 
-    if ((this.state.index + 1) < this.state.totalQuestions) {
-      this.startTimer();
-    }
-
     this.setState({
-      currAnswer: this.generateAnswer(),
-      index: this.state.index + 1,
+      currAnswer: 0,
+      index: -1,
     });
+  }
+
+  retry = () => {
+    this.setState({
+      isGameOver: false,
+    });
+
+    this.reset();
+    this.next();
+  }
+
+  next = () => {
+    this.clearTimer();
+
+    if ((this.state.index + 1) < this.state.settings['num-questions']) {
+      log('Next question');
+
+      this.startTimer();
+
+      this.setState({
+        currAnswer: this.generateAnswer(),
+        index: this.state.index + 1,
+      });
+    }
+    else {
+      log('Game over');
+
+      this.reset();
+
+      this.setState({
+        isGameOver: true,
+      });
+    }
   }
 
   handleCorrectAnswer = () => {
@@ -172,7 +211,7 @@ class Home extends PureComponent<Props, State> {
   generateAnswer = (): number => {
     const d = this.state.difficulty;
     const t = _.random(d - 5, d + 5, false);
-    const [min, max] = this.state.aircraftCount;
+    const [min, max] = this.state.settings['aircraft-count'];
 
     return _.clamp(t, min, max);
   }
@@ -210,16 +249,15 @@ class Home extends PureComponent<Props, State> {
     const answers = this.generateChoices();
 
     return (
-      <StyledAnswers>
+      <StyledChoices>
         { Array.from(Array(this.state.numChoices).keys()).map((v, i) => (
-          <button
-            key={`answer${i}`}
-            onClick={() => this.chooseAnswer(answers[i])}
-          >
-            {answers[i]}
-          </button>
+          <Transition key={`answer-${this.state.index}-${i}`} in={true} appear={true} timeout={i * 80}>
+            {(state: TransitionStatus) => (
+              <StyledChoice transitionState={state} onClick={() => this.chooseAnswer(answers[i])}>{answers[i]}</StyledChoice>
+            )}
+          </Transition>
         )) }
-      </StyledAnswers>
+      </StyledChoices>
     );
   }
 
@@ -228,8 +266,17 @@ class Home extends PureComponent<Props, State> {
 
     return (
       <StyledRoot ref={this.nodeRefs.root}>
-        { this.state.index < this.state.totalQuestions &&
+        { this.state.isGameOver &&
           <Fragment>
+            <StyledGameOver>
+              <h1>{t['game-over']}</h1>
+              <h2><strong>{this.state.correct}</strong> / {this.state.settings['num-questions']}</h2>
+              <button onClick={() => this.retry()}>{t['retry']}</button>
+            </StyledGameOver>
+          </Fragment>
+          ||
+          <Fragment>
+            <StyledQuestionLabel>{this.state.index > -1 ? `${this.state.index + 1}` : ''}</StyledQuestionLabel>
             <StyledTimer ref={this.nodeRefs.timer}/>
             <StyledViewport
               key={this.state.index}
@@ -241,16 +288,19 @@ class Home extends PureComponent<Props, State> {
               minDelay={0.1}
               maxDelay={.5}
             />
-            {this.renderChoices()}
-          </Fragment>
-          ||
-          <Fragment>
-            <StyledGameOver>
-              <h1>{t['game-over']}</h1>
-              <h2>{this.state.correct} / {this.state.totalQuestions}</h2>
-            </StyledGameOver>
+            {this.state.index > -1 && this.renderChoices()}
           </Fragment>
         }
+        <Footer onSettingsButtonClick={this.openSettings}/>
+        <Transition in={this.state.areSettingsVisible} timeout={0}>
+          {(state: TransitionStatus) => (
+            <StyledSettings
+              transitionState={state}
+              onSave={this.closeSettings}
+              onChange={this.updateSettings}
+            />
+          )}
+        </Transition>
       </StyledRoot>
     );
   }
@@ -273,20 +323,62 @@ const StyledRoot = styled.div`
   width: 100%;
 `;
 
-const StyledGameOver = styled.div`
+const StyledSettings = styled(Settings)<any>`
+  opacity: ${props => styleByTransitionState(props.transitionState, 0, 1, 1, 0)};
+  z-index: 100;
+  transform: scale(${props => styleByTransitionState(props.transitionState, 1.2, 1, 1, 1.2)});
+  transition-property: opacity, transform;
+  transition-duration: .2s;
+  transition-timing-function: ease-out;
+  pointer-events: ${props => styleByTransitionState(props.transitionState, 'none', 'auto', 'auto', 'none')};
+`;
+
+const StyledQuestionLabel = styled.span`
   ${promptu.container.fvcc}
+  ${promptu.align.tl}
+  ${props => props.theme.text(800, 400, undefined, -40)}
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  opacity: .05;
+`;
+
+const StyledGameOver = styled.div`
+  ${promptu.align.tl}
+  ${promptu.container.fvcc}
+  width: 100%;
+  height: 100%;
 
   h1 {
-    color: #999;
-    font-size: 3rem;
-    text-transform: uppercase;
-    font-weight: 800;
+    ${props => props.theme.title(24)}
+    color: #aaa;
     margin-bottom: 2rem;
   }
 
   h2 {
-    font-size: 8rem;
-    color: #fff;
+    ${props => props.theme.text(100)}
+    color: #aaa;
+    margin-bottom: 4rem;
+
+    strong {
+      color: #fff;
+    }
+  }
+
+  button {
+    ${promptu.container.fhcl}
+    ${props => props.theme.text(22)}
+    width: 15rem;
+    height: 4rem;
+    padding: 0 1rem;
+    color: #000;
+    transition: background .2s ease-out;
+    text-align: center;
+    background: #fff;
+
+    &:hover {
+      background: #ccc;
+    }
   }
 `;
 
@@ -296,29 +388,36 @@ const StyledTimer = styled.div`
   width: 100%;
   background: #fff;
   transform-origin: center left;
-  transform: translate3d(0, 0, 0);
 `;
 
-const StyledAnswers = styled.div`
+const StyledChoices = styled.div`
   ${promptu.align.bc}
   ${promptu.container.fhcc}
   bottom: 10rem;
+`;
 
-  button {
-    ${promptu.container.fhcc}
-    width: 8rem;
-    height: 4rem;
-    background: #fff;
-    color: #000;
-    transition: background .2s ease-out;
+const StyledChoice = styled.button<any>`
+  ${promptu.container.fhcc}
+  ${props => props.theme.text(22, 700)}
+  padding: .1rem 0 0 .1rem;
+  width: 4rem;
+  height: 4rem;
+  overflow: hidden;
+  border-radius: 4rem;
+  background: #000;
+  color: #fff;
+  transition-property: background, opacity, transform;
+  transition-duration: .2s;
+  transition-timing-function: ease-out;
+  transform: translate3d(0, ${props => styleByTransitionState(props.transitionState, 10, 0, 0, -10)}px, 0);
+  opacity: ${props => styleByTransitionState(props.transitionState, 0, 1, 1, 0)};
 
-    &:hover {
-      background: #aaa;
-    }
+  &:hover {
+    background: #222;
+  }
 
-    &:not(:last-child) {
-      margin-right: 2rem;
-    }
+  &:not(:last-child) {
+    margin-right: 2rem;
   }
 `;
 

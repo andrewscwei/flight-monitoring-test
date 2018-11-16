@@ -11,8 +11,8 @@ const Footer: SFC<Props> = ({ onSettingsButtonClick }) => (
   <StyledRoot>
     <StyledMonogram href='https://www.andr.mu' dangerouslySetInnerHTML={{ __html: require('!raw-loader!@/assets/images/mu.svg') }}/>
     <nav>
-      <button onClick={() => onSettingsButtonClick() } dangerouslySetInnerHTML={{ __html: require('!raw-loader!@/assets/images/settings-icon.svg') }}/>
-      <a dangerouslySetInnerHTML={{ __html: require('!raw-loader!@/assets/images/github-icon.svg') }} href='https://github.com/andrewscwei/flight-monitoring-test'/>
+      <button onClick={() => onSettingsButtonClick() } dangerouslySetInnerHTML={{ __html: require('!raw-loader!@/assets/images/icon-settings.svg') }}/>
+      <a dangerouslySetInnerHTML={{ __html: require('!raw-loader!@/assets/images/icon-github.svg') }} href='https://github.com/andrewscwei/flight-monitoring-test'/>
     </nav>
   </StyledRoot>
 );

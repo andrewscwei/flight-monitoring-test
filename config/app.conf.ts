@@ -28,6 +28,45 @@ export default {
     url: require('../package.json').homepage,
   },
 
+  // App client settings.
+  settings: {
+    'timer': {
+      type: 'slider',
+      min: 5,
+      max: 20,
+      default: 15,
+    },
+    'num-questions': {
+      type: 'slider',
+      min: 5,
+      max: 100,
+      default: 15,
+    },
+    'num-choices': {
+      type: 'slider',
+      min: 2,
+      max: 10,
+      default: 5,
+    },
+    'answer-feedback': {
+      type: 'select',
+      items: ['yes', 'no'],
+      default: 'yes',
+    },
+    'speed': {
+      type: 'slider',
+      min: 1,
+      max: 10,
+      default: 5,
+    },
+    'aircraft-count': {
+      type: 'range',
+      min: 3,
+      max: 50,
+      default: [5, 20],
+    },
+  },
+
   // Supported locales. First locale is the default locale.
   locales: ['en'],
 

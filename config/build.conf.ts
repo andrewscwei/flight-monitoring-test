@@ -4,7 +4,6 @@
  */
 
 import CopyPlugin from 'copy-webpack-plugin';
-import HappyPack from 'happypack';
 import HTMLPlugin from 'html-webpack-plugin';
 import path from 'path';
 import PrerenderSPAPlugin, { PuppeteerRenderer as Renderer } from 'prerender-spa-plugin';
@@ -31,7 +30,7 @@ const config: Configuration = {
     rules: [{
       exclude: /node_modules/,
       test: /\.tsx?$/,
-      use: 'happypack/loader?id=ts',
+      use: 'ts-loader',
     }, {
       test: /\.(jpe?g|png|gif|svg)(\?.*)?$/,
       loaders: [
@@ -64,14 +63,14 @@ const config: Configuration = {
     new EnvironmentPlugin({
       NODE_ENV: 'production',
     }),
-    new HappyPack({
-      id: 'ts',
-      threads: 2,
-      loaders: [{
-        path: 'ts-loader',
-        query: { happyPackMode: true },
-      }],
-    }),
+    // new HappyPack({
+    //   id: 'ts',
+    //   threads: 2,
+    //   loaders: [{
+    //     path: 'ts-loader',
+    //     query: { happyPackMode: true },
+    //   }],
+    // }),
     new DefinePlugin({
       __APP_CONFIG__: JSON.stringify(appConfig),
       __INTL_CONFIG__: JSON.stringify({
