@@ -34,7 +34,6 @@ export interface State {
   currAnswer: number;
   index: number;
   isGameOver: boolean;
-  numChoices: number;
   difficulty: number;
   correct: number;
   settings: SettingsOptions;
@@ -46,7 +45,6 @@ class Home extends PureComponent<Props, State> {
     currAnswer: 0,
     index: -1,
     isGameOver: false,
-    numChoices: 5,
     difficulty: 8,
     settings: defaultOptions,
     correct: 0,
@@ -157,14 +155,16 @@ class Home extends PureComponent<Props, State> {
   handleCorrectAnswer = () => {
     log('Bingo!');
 
-    anime.remove(document.body);
+    if (this.state.settings['answer-feedback'] === 'yes') {
+      anime.remove(document.body);
 
-    anime({
-      targets: document.body,
-      backgroundColor: [theme.correctBackbroundColor, theme.backgroundColor],
-      duration: 1000,
-      easing: 'easeOutCubic',
-    });
+      anime({
+        targets: document.body,
+        backgroundColor: [theme.correctBackbroundColor, theme.backgroundColor],
+        duration: 1000,
+        easing: 'easeOutCubic',
+      });
+    }
 
     this.setState({
       correct: this.state.correct + 1,
@@ -177,14 +177,16 @@ class Home extends PureComponent<Props, State> {
   handleWrongAnswer = () => {
     log('Wrong :(');
 
-    anime.remove(document.body);
+    if (this.state.settings['answer-feedback'] === 'yes') {
+      anime.remove(document.body);
 
-    anime({
-      targets: document.body,
-      backgroundColor: [theme.incorrectBackgroundColor, theme.backgroundColor],
-      duration: 1000,
-      easing: 'easeOutCubic',
-    });
+      anime({
+        targets: document.body,
+        backgroundColor: [theme.incorrectBackgroundColor, theme.backgroundColor],
+        duration: 1000,
+        easing: 'easeOutCubic',
+      });
+    }
 
     this.decreaseDifficulty();
     this.next();
@@ -211,7 +213,7 @@ class Home extends PureComponent<Props, State> {
   }
 
   generateChoices = (): number[] => {
-    const num = this.state.numChoices;
+    const num = this.state.settings['num-choices'];
     const idx = _.random(0, num - 1, false);
     const ans = [];
 
@@ -244,7 +246,7 @@ class Home extends PureComponent<Props, State> {
 
     return (
       <StyledChoices>
-        { Array.from(Array(this.state.numChoices).keys()).map((v, i) => (
+        { Array.from(Array(this.state.settings['num-choices']).keys()).map((v, i) => (
           <Transition key={`answer-${this.state.index}-${i}`} in={true} appear={true} timeout={i * 80}>
             {(state: TransitionStatus) => (
               <StyledChoice transitionState={state} onClick={() => this.chooseAnswer(answers[i])}>{answers[i]}</StyledChoice>

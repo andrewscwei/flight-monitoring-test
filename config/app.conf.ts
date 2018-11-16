@@ -51,7 +51,7 @@ export default {
     'answer-feedback': {
       type: 'select',
       items: ['yes', 'no'],
-      default: 'yes',
+      default: 'no',
     },
     'speed': {
       type: 'slider',
