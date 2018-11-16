@@ -167,7 +167,7 @@ class Home extends PureComponent<Props, State> {
 
     this.setState({
       score,
-      difficulty,
+      difficulty: isGameOver ? DEFAULT_DIFFICULTY : difficulty,
       isGameOver,
       currAnswer: isGameOver ? 0 : this.generateAnswer(),
       index: isGameOver ? -1 : this.state.index + 1,
