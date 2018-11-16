@@ -154,10 +154,12 @@ class Settings extends PureComponent<Props, State> {
     return (
       <StyledRoot className={className} style={style}>
         <div>
-          <h1>{t['settings']}</h1>
+          <header>
+            <h1>{t['settings']}</h1>
+            <button onClick={() => this.props.onSave()}>{t['done']}</button>
+          </header>
           { Object.keys(config).map((optionType: string, idx: number) => this.renderOption(optionType, `option-${idx}`)) }
         </div>
-        <button dangerouslySetInnerHTML={{ __html: require('!raw-loader!@/assets/images/icon-exit.svg') }} onClick={() => this.props.onSave()}/>
       </StyledRoot>
     );
   }
@@ -177,7 +179,6 @@ const StyledRoot = styled.div`
   width: 100%;
   height: 100%;
   padding: 5rem 3rem;
-  background: rgba(0, 0, 0, .9);
   touch-action: none;
   overflow-x: hidden;
   overflow-y: scroll;
@@ -189,21 +190,30 @@ const StyledRoot = styled.div`
     height: auto;
   }
 
+  header {
+    ${promptu.container.fhcl}
+  }
+
   h1 {
     ${props => props.theme.title(40)}
     color: #fff;
     margin-bottom: 3rem;
+    flex-grow: 1;
   }
 
   button {
-    ${promptu.align.tr}
-    width: 2rem;
-    height: 2rem;
-    margin: 3rem;
-    transition: opacity .2s ease-out;
+    ${promptu.container.fhcl}
+    ${props => props.theme.text(22)}
+    width: 15rem;
+    height: 4rem;
+    padding: 0 1rem;
+    color: #fff;
+    transition: background .2s ease-out;
+    text-align: center;
+    background: ${props => props.theme.purpleColor};
 
     &:hover {
-      opacity: .6;
+      background: ${props => props.theme.greenColor};
     }
   }
 `;

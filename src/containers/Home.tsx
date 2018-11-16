@@ -247,7 +247,7 @@ class Home extends PureComponent<Props, State> {
     return (
       <StyledChoices>
         { Array.from(Array(this.state.settings['num-choices']).keys()).map((v, i) => (
-          <Transition key={`answer-${this.state.index}-${i}`} in={true} appear={true} timeout={i * 80}>
+          <Transition key={`answer-${this.state.index}-${i}`} in={true} appear={true} timeout={i * 50}>
             {(state: TransitionStatus) => (
               <StyledChoice transitionState={state} onClick={() => this.chooseAnswer(answers[i])}>{answers[i]}</StyledChoice>
             )}
@@ -287,11 +287,16 @@ class Home extends PureComponent<Props, State> {
         <Footer onSettingsButtonClick={this.openSettings}/>
         <Transition in={this.state.areSettingsVisible} timeout={0}>
           {(state: TransitionStatus) => (
-            <StyledSettings
-              transitionState={state}
-              onSave={this.closeSettings}
-              onChange={this.updateSettings}
-            />
+            <Fragment>
+              <StyledOverlay
+                transitionState={state}
+              />
+              <StyledSettings
+                transitionState={state}
+                onSave={this.closeSettings}
+                onChange={this.updateSettings}
+              />
+            </Fragment>
           )}
         </Transition>
       </StyledRoot>
@@ -314,12 +319,25 @@ const StyledRoot = styled.div`
   font-family: ${props => props.theme.font};
   height: 100%;
   width: 100%;
+  perspective: 80rem;
+`;
+
+const StyledOverlay = styled.div<any>`
+  ${promptu.align.tl}
+  width: 100%;
+  height: 100%;
+  opacity: ${props => styleByTransitionState(props.transitionState, 0, 1, 1, 0)};
+  background: rgba(0, 0, 0, .9);
+  transition: opacity .2s ease-out;
+  pointer-events: ${props => styleByTransitionState(props.transitionState, 'none', 'auto', 'auto', 'none')};
+  z-index: 100;
 `;
 
 const StyledSettings = styled(Settings)<any>`
   opacity: ${props => styleByTransitionState(props.transitionState, 0, 1, 1, 0)};
   z-index: 100;
-  transform: scale(${props => styleByTransitionState(props.transitionState, 1.2, 1, 1, 1.2)});
+  transform: rotateY(${props => styleByTransitionState(props.transitionState, 24, 10, 10, 24)}deg) translate3d(0, ${props => styleByTransitionState(props.transitionState, 30, 0, 0, 30)}px, 0);
+  transform-origin: center;
   transition-property: opacity, transform;
   transition-duration: .2s;
   transition-timing-function: ease-out;

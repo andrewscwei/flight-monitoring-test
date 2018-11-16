@@ -36,6 +36,18 @@ export default {
       max: 20,
       default: 15,
     },
+    'speed': {
+      type: 'slider',
+      min: 1,
+      max: 10,
+      default: 5,
+    },
+    'aircraft-count': {
+      type: 'range',
+      min: 3,
+      max: 50,
+      default: [5, 20],
+    },
     'num-questions': {
       type: 'slider',
       min: 5,
@@ -52,18 +64,6 @@ export default {
       type: 'select',
       items: ['yes', 'no'],
       default: 'no',
-    },
-    'speed': {
-      type: 'slider',
-      min: 1,
-      max: 10,
-      default: 5,
-    },
-    'aircraft-count': {
-      type: 'range',
-      min: 3,
-      max: 50,
-      default: [5, 20],
     },
   },
 
