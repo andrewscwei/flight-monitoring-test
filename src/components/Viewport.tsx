@@ -33,10 +33,6 @@ class Viewport extends PureComponent<Props, State> {
     this.stopShuffling();
   }
 
-  componentWillUpdate() {
-    this.stopShuffling();
-  }
-
   componentDidUpdate(prevProps: Props, prevState: State) {
     if (prevProps.count !== this.props.count) {
       this.reshuffle();

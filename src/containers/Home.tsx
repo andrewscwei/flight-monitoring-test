@@ -59,10 +59,26 @@ class Home extends PureComponent<Props, State> {
 
   componentDidMount() {
     if (!this.state.areSettingsVisible) this.next();
+
+    window.addEventListener('resize', this.onWindowResize);
   }
 
   componentWillUnmount() {
+    window.removeEventListener('resize', this.onWindowResize);
+
     this.clearTimer();
+  }
+
+  onWindowResize = () => {
+    this.forceUpdate();
+  }
+
+  getViewportRadius = (): number => {
+    const p = 20;
+    const t = Math.min(window.innerWidth - p, window.innerHeight - p) / 2;
+    const max = 200;
+
+    return Math.min(t, max);
   }
 
   openSettings = () => {
@@ -129,6 +145,7 @@ class Home extends PureComponent<Props, State> {
     this.setState({
       isGameOver,
       currAnswer: 0,
+      correct: 0,
       index: -1,
     });
   }
@@ -273,12 +290,14 @@ class Home extends PureComponent<Props, State> {
           </Fragment>
           ||
           <Fragment>
-            <StyledQuestionLabel>{this.state.index > -1 ? `${this.state.index + 1}` : ''}</StyledQuestionLabel>
+            { this.state.index > -1 &&
+              <StyledQuestionLabel>{t['stage']} <strong>{this.state.index + 1}</strong></StyledQuestionLabel>
+            }
             <StyledViewport
               key={this.state.index}
               count={this.state.currAnswer}
               dotRadius={10}
-              radius={200}
+              radius={this.getViewportRadius()}
               speed={this.state.settings['speed']}
             />
             {this.state.index > -1 && this.renderChoices()}
@@ -345,13 +364,19 @@ const StyledSettings = styled(Settings)<any>`
 `;
 
 const StyledQuestionLabel = styled.span`
-  ${promptu.container.fvcc}
-  ${promptu.align.tl}
-  ${props => props.theme.text(800, 400, undefined, -40)}
-  width: 100%;
-  height: 100%;
-  color: #fff;
-  opacity: .02;
+  ${promptu.container.box}
+  ${promptu.align.tc}
+  ${props => props.theme.title(14, 400)}
+  top: calc(3px + 8vh);
+  text-align: center;
+  width: 10rem;
+  height: auto;
+  color: #666;
+
+  strong {
+    font-weight: 700;
+    color: #fff;
+  }
 `;
 
 const StyledGameOver = styled.div`
@@ -405,15 +430,15 @@ const StyledTimer = styled.div<any>`
 const StyledChoices = styled.div`
   ${promptu.align.bc}
   ${promptu.container.fhcc}
-  bottom: 10rem;
+  bottom: calc(4vh + 4rem);
 `;
 
 const StyledChoice = styled.button<any>`
   ${promptu.container.fhcc}
   ${props => props.theme.text(22, 700)}
   padding: .1rem 0 0 .1rem;
-  width: 5rem;
-  height: 5rem;
+  width: 4.4rem;
+  height: 4.4rem;
   overflow: hidden;
   border-radius: 4rem;
   background: ${props => props.theme.purpleColor};
@@ -429,7 +454,7 @@ const StyledChoice = styled.button<any>`
   }
 
   &:not(:last-child) {
-    margin-right: 2rem;
+    margin-right: 1.5rem;
   }
 `;
 

@@ -12,6 +12,7 @@
   "num-choices": "Number of choices",
   "num-questions": "Number of questions",
   "answer-feedback": "Show answer feedback",
+  "stage": "Q",
   "yes": "Yes",
   "no": "No",
   "done": "Done",
