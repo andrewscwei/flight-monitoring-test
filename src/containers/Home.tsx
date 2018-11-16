@@ -17,6 +17,8 @@ import styled from 'styled-components';
 
 const log = debug('app');
 
+const DEFAULT_DIFFICULTY = 8;
+
 interface StateProps {
   t: TranslationData;
 }
@@ -35,7 +37,7 @@ export interface State {
   index: number;
   isGameOver: boolean;
   difficulty: number;
-  correct: number;
+  score: number;
   settings: SettingsOptions;
 }
 
@@ -45,9 +47,9 @@ class Home extends PureComponent<Props, State> {
     currAnswer: 0,
     index: -1,
     isGameOver: false,
-    difficulty: 8,
+    difficulty: DEFAULT_DIFFICULTY,
     settings: defaultOptions,
-    correct: 0,
+    score: 0,
   };
 
   nodeRefs = {
@@ -139,34 +141,37 @@ class Home extends PureComponent<Props, State> {
     });
   }
 
-  reset = (isGameOver: boolean = false) => {
+  reset = () => {
     this.clearTimer();
 
     this.setState({
-      isGameOver,
+      isGameOver: false,
+      difficulty: DEFAULT_DIFFICULTY,
+      score: 0,
       currAnswer: 0,
-      correct: 0,
       index: -1,
     });
   }
 
-  next = () => {
-    if ((this.state.index + 1) < this.state.settings['num-questions']) {
-      log('Next question');
+  next = (score: number = 0, difficulty: number = DEFAULT_DIFFICULTY) => {
+    const isGameOver = (this.state.index + 1) >= this.state.settings['num-questions'];
 
-      this.startTimer();
+    log(isGameOver ? 'GG' : 'Next question');
 
-      this.setState({
-        isGameOver: false,
-        currAnswer: this.generateAnswer(),
-        index: this.state.index + 1,
-      });
+    if (isGameOver) {
+      this.clearTimer();
     }
     else {
-      log('Game over');
-
-      this.reset(true);
+      this.startTimer();
     }
+
+    this.setState({
+      score,
+      difficulty,
+      isGameOver,
+      currAnswer: isGameOver ? 0 : this.generateAnswer(),
+      index: isGameOver ? -1 : this.state.index + 1,
+    });
   }
 
   handleCorrectAnswer = () => {
@@ -183,12 +188,7 @@ class Home extends PureComponent<Props, State> {
       });
     }
 
-    this.setState({
-      correct: this.state.correct + 1,
-    });
-
-    this.increaseDifficulty();
-    this.next();
+    this.next(this.state.score + 1, this.state.difficulty + 1);
   }
 
   handleWrongAnswer = () => {
@@ -205,20 +205,7 @@ class Home extends PureComponent<Props, State> {
       });
     }
 
-    this.decreaseDifficulty();
-    this.next();
-  }
-
-  increaseDifficulty = () => {
-    this.setState({
-      difficulty: this.state.difficulty + 1,
-    });
-  }
-
-  decreaseDifficulty = () => {
-    this.setState({
-      difficulty: this.state.difficulty - 1,
-    });
+    this.next(this.state.score, this.state.difficulty - 1);
   }
 
   generateAnswer = (): number => {
@@ -284,7 +271,7 @@ class Home extends PureComponent<Props, State> {
           <Fragment>
             <StyledGameOver>
               <h1>{t['game-over']}</h1>
-              <h2><strong>{this.state.correct}</strong> / {this.state.settings['num-questions']}</h2>
+              <h2><strong>{this.state.score}</strong> / {this.state.settings['num-questions']}</h2>
               <button onClick={() => this.next()}>{t['retry']}</button>
             </StyledGameOver>
           </Fragment>
