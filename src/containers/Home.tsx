@@ -329,9 +329,9 @@ const StyledRoot = styled.div`
 `;
 
 const StyledOverlay = styled.div<any>`
-  ${promptu.align.tl}
-  width: 100%;
-  height: 100%;
+  ${promptu.align.ftl}
+  width: 100vw;
+  height: 100vh;
   opacity: ${props => styleByTransitionState(props.transitionState, 0, 1, 1, 0)};
   background: rgba(0, 0, 0, .9);
   transition: opacity .2s ease-out;

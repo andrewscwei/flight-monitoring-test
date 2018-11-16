@@ -153,9 +153,11 @@ class Settings extends PureComponent<Props, State> {
 
     return (
       <StyledRoot className={className} style={style}>
-        <button dangerouslySetInnerHTML={{ __html: require('!raw-loader!@/assets/images/icon-exit.svg')}} onClick={() => this.props.onSave()}/>
         <div>
-          <h1>{t['settings']}</h1>
+          <header>
+            <h1>{t['settings']}</h1>
+            <button dangerouslySetInnerHTML={{ __html: require('!raw-loader!@/assets/images/icon-exit.svg')}} onClick={() => this.props.onSave()}/>
+          </header>
           { Object.keys(config).map((optionType: string, idx: number) => this.renderOption(optionType, `option-${idx}`)) }
         </div>
       </StyledRoot>
@@ -173,10 +175,10 @@ export default connect(
 )(Settings);
 
 const StyledRoot = styled.div`
-  ${promptu.container.fvtc}
+  ${promptu.container.fvcc}
   width: 100%;
   height: 100%;
-  padding: 5rem 3rem;
+  padding: 0 3rem;
   touch-action: none;
   overflow-x: hidden;
   overflow-y: scroll;
@@ -188,17 +190,20 @@ const StyledRoot = styled.div`
     height: auto;
   }
 
-  h1 {
-    ${props => props.theme.title(40)}
-    color: #fff;
+  header {
+    ${promptu.container.fhcl}
     margin-bottom: 3rem;
   }
 
+  h1 {
+    ${props => props.theme.title(40)}
+    color: #fff;
+    flex-grow: 1;
+  }
+
   button {
-    ${props => promptu.align.tr}
     width: 2.4rem;
     height: 2.4rem;
-    margin: 3rem;
     transition: opacity .2s ease-out;
 
     &:hover {
