@@ -4,6 +4,7 @@ import _ from 'lodash';
 import promptu from 'promptu';
 import React, { createRef, PureComponent } from 'react';
 import styled from 'styled-components';
+import { defaultOptions } from './Settings';
 
 const log = debug('app:viewport');
 
@@ -12,10 +13,7 @@ export interface Props {
   count: number;
   radius: number;
   dotRadius: number;
-  minDuration: number;
-  maxDuration: number;
-  minDelay: number;
-  maxDelay: number;
+  speed: number;
 }
 
 export interface State {
@@ -78,18 +76,36 @@ class Viewport extends PureComponent<Props, State> {
   shuffleDot(dot: HTMLElement, from: [number, number] = this.randomCoordinate()) {
     const to = this.randomCoordinate();
 
+    anime.remove(dot);
+
     anime({
       targets: dot,
       translateX: [from[0], to[0]],
       translateY: [from[1], to[1]],
       translateZ: 0,
       easing: 'easeOutCubic',
-      delay: _.random(this.props.minDelay, this.props.maxDelay, true) * 1000,
-      duration: _.random(this.props.minDuration, this.props.maxDuration, true) * 1000,
+      delay: this.getRandomDelay(),
+      duration: this.getRandomDuration(),
       complete: () => {
         this.shuffleDot(dot, to);
       },
     });
+  }
+
+  getRandomDelay = (): number => {
+    const modifier = (this.props.speed - (defaultOptions['speed'] / 2)) * .02;
+    const min = .1 - modifier;
+    const max = .5 - modifier;
+
+    return _.random(min, max, true) * 1000;
+  }
+
+  getRandomDuration = (): number => {
+    const modifier = (this.props.speed - (defaultOptions['speed'] / 2)) * .15;
+    const min = 1.3 - modifier;
+    const max = 1.7 - modifier;
+
+    return _.random(min, max, true) * 1000;
   }
 
   randomCoordinate = (): [number, number] => {

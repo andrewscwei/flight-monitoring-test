@@ -279,10 +279,7 @@ class Home extends PureComponent<Props, State> {
               count={this.state.currAnswer}
               dotRadius={10}
               radius={200}
-              minDuration={1.5}
-              maxDuration={1.5}
-              minDelay={0.1}
-              maxDelay={.5}
+              speed={this.state.settings['speed']}
             />
             {this.state.index > -1 && this.renderChoices()}
           </Fragment>
