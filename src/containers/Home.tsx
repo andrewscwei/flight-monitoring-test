@@ -17,7 +17,7 @@ import styled from 'styled-components';
 
 const log = debug('app');
 
-const DEFAULT_DIFFICULTY = 8;
+const DEFAULT_DIFFICULTY = 6;
 
 interface StateProps {
   t: TranslationData;
@@ -210,7 +210,7 @@ class Home extends PureComponent<Props, State> {
 
   generateAnswer = (): number => {
     const d = this.state.difficulty;
-    const t = _.random(d - 5, d + 5, false);
+    const t = _.random(d - 2, d + 2, false);
     const [min, max] = this.state.settings['aircraft-count'];
 
     return _.clamp(t, min, max);
