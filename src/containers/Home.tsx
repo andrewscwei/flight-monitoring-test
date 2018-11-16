@@ -264,9 +264,9 @@ class Home extends PureComponent<Props, State> {
     return (
       <StyledChoices>
         { Array.from(Array(this.state.settings['num-choices']).keys()).map((v, i) => (
-          <Transition key={`answer-${this.state.index}-${i}`} in={true} appear={true} timeout={i * 50}>
+          <Transition key={`choice-transition-${this.state.index}-${i}`} in={true} appear={true} timeout={i * 50}>
             {(state: TransitionStatus) => (
-              <StyledChoice transitionState={state} onClick={() => this.chooseAnswer(answers[i])}>{answers[i]}</StyledChoice>
+              <StyledChoice key={`choice-${this.state.index}-${i}`} transitionState={state} onClick={() => this.chooseAnswer(answers[i])}>{answers[i]}</StyledChoice>
             )}
           </Transition>
         )) }
@@ -355,7 +355,7 @@ const StyledOverlay = styled.div<any>`
 const StyledSettings = styled(Settings)<any>`
   opacity: ${props => styleByTransitionState(props.transitionState, 0, 1, 1, 0)};
   z-index: 100;
-  transform: rotateY(${props => styleByTransitionState(props.transitionState, 24, 10, 10, 24)}deg) translate3d(0, ${props => styleByTransitionState(props.transitionState, 30, 0, 0, 30)}px, 0);
+  transform: scale(${props => styleByTransitionState(props.transitionState, 1.2, 1, 1, 1.2)}) translate3d(0,0, 0);
   transform-origin: center;
   transition-property: opacity, transform;
   transition-duration: .2s;

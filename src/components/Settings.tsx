@@ -153,11 +153,9 @@ class Settings extends PureComponent<Props, State> {
 
     return (
       <StyledRoot className={className} style={style}>
+        <button dangerouslySetInnerHTML={{ __html: require('!raw-loader!@/assets/images/icon-exit.svg')}} onClick={() => this.props.onSave()}/>
         <div>
-          <header>
-            <h1>{t['settings']}</h1>
-            <button onClick={() => this.props.onSave()}>{t['done']}</button>
-          </header>
+          <h1>{t['settings']}</h1>
           { Object.keys(config).map((optionType: string, idx: number) => this.renderOption(optionType, `option-${idx}`)) }
         </div>
       </StyledRoot>
@@ -190,30 +188,21 @@ const StyledRoot = styled.div`
     height: auto;
   }
 
-  header {
-    ${promptu.container.fhcl}
-  }
-
   h1 {
     ${props => props.theme.title(40)}
     color: #fff;
     margin-bottom: 3rem;
-    flex-grow: 1;
   }
 
   button {
-    ${promptu.container.fhcl}
-    ${props => props.theme.text(22)}
-    width: 15rem;
-    height: 4rem;
-    padding: 0 1rem;
-    color: #fff;
-    transition: background .2s ease-out;
-    text-align: center;
-    background: ${props => props.theme.purpleColor};
+    ${props => promptu.align.tr}
+    width: 2.4rem;
+    height: 2.4rem;
+    margin: 3rem;
+    transition: opacity .2s ease-out;
 
     &:hover {
-      background: ${props => props.theme.greenColor};
+      opacity: .6;
     }
   }
 `;
