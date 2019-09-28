@@ -28,6 +28,9 @@ export default {
     url: require('../package.json').homepage,
   },
 
+  // Google Analytics ID (i.e. UA-XXXXXXXX-1)
+  ga: 'UA-108117457-4',
+
   // App client settings.
   settings: {
     'timer': {
