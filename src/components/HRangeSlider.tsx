@@ -377,7 +377,7 @@ const StyledKnob = styled.div<any>`
   left: ${props => -props.radius - props.padding}px;
   margin: auto 0;
   position: absolute;
-  padding: ${props => props.padding}px;
+  padding: 0;
   width: ${props => (props.radius + props.padding) * 2}px;
   height: ${props => (props.radius + props.padding) * 2}px;
   background: transparent;
