@@ -22,8 +22,7 @@ export default Footer;
 const StyledRoot = styled.footer`
   ${promptu.container.fhcl}
   ${promptu.align.fbl}
-  height: 50px;
-  padding: 0 5%;
+  padding: 2rem;
   width: 100%;
   position: fixed;
   z-index: 10;
@@ -50,8 +49,10 @@ const StyledRoot = styled.footer`
       height: 100%;
     }
 
-    &:hover {
-      opacity: .6;
+    @media (hover: hover) {
+      &:hover {
+        opacity: .6;
+      }
     }
   }
 `;
@@ -66,7 +67,9 @@ const StyledMonogram = styled.a`
     height: 100%;
   }
 
-  &:hover {
-    opacity: .6;
+  @media (hover: hover) {
+    &:hover {
+      opacity: .6;
+    }
   }
 `;

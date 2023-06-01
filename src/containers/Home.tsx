@@ -399,8 +399,10 @@ const StyledGameOver = styled.div`
     text-align: center;
     background: ${props => props.theme.purpleColor};
 
-    &:hover {
-      background: ${props => props.theme.greenColor};
+    @media (hover: hover) {
+      &:hover {
+        background: ${props => props.theme.greenColor};
+      }
     }
   }
 `;
@@ -437,8 +439,10 @@ const StyledChoice = styled.button<any>`
   opacity: ${props => styleByTransitionState(props.transitionState, 0, 1, 1, 0)};
 
   ${props => promptu.media.gttablet`
-    &:hover {
-      background: ${props.theme.greenColor};
+    @media (hover: hover) {
+      &:hover {
+        background: ${props.theme.greenColor};
+      }
     }
   `}
 

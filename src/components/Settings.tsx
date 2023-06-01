@@ -206,8 +206,10 @@ const StyledRoot = styled.div`
     height: 2.4rem;
     transition: opacity .2s ease-out;
 
-    &:hover {
-      opacity: .6;
+    @media (hover: hover) {
+      &:hover {
+        opacity: .6;
+      }
     }
   }
 `;
@@ -243,7 +245,9 @@ const StyledSelect = styled.select`
   background: #fff;
   border-radius: 0;
 
-  &:hover {
-    background: #ccc;
+  @media (hover: hover) {
+    &:hover {
+      background: #ccc;
+    }
   }
 `;
