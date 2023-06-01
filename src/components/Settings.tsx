@@ -1,12 +1,12 @@
-import { AppState } from '@/store';
-import debug from 'debug';
-import _ from 'lodash';
-import promptu from 'promptu';
-import React, { ChangeEvent, PureComponent } from 'react';
-import { connect } from 'react-redux';
-import { Action, bindActionCreators, Dispatch } from 'redux';
-import styled, { Styles } from 'styled-components';
-import HRangeSlider, { NumberRange } from './HRangeSlider';
+import { AppState } from '@/store'
+import debug from 'debug'
+import _ from 'lodash'
+import promptu from 'promptu'
+import React, { ChangeEvent, PureComponent } from 'react'
+import { connect } from 'react-redux'
+import { Action, Dispatch, bindActionCreators } from 'redux'
+import styled, { Styles } from 'styled-components'
+import HRangeSlider, { NumberRange } from './HRangeSlider'
 
 const log = debug('app:settings');
 const config: {
@@ -160,6 +160,8 @@ class Settings extends PureComponent<Props, State> {
           </header>
           { Object.keys(config).map((optionType: string, idx: number) => this.renderOption(optionType, `option-${idx}`)) }
         </div>
+        <StyledMonogram href='https://www.andr.mu' dangerouslySetInnerHTML={{ __html: require('!raw-loader!@/assets/images/mu.svg') }}/>
+        <StyledGitHubLink dangerouslySetInnerHTML={{ __html: require('!raw-loader!@/assets/images/icon-github.svg') }} href='https://github.com/andrewscwei/flight-monitoring-test'/>
       </StyledRoot>
     );
   }
@@ -251,3 +253,41 @@ const StyledSelect = styled.select`
     }
   }
 `;
+
+const StyledMonogram = styled.a`
+  ${promptu.container.box}
+  ${promptu.align.bl}
+  margin: 2rem;
+  height: 2rem;
+  transition: opacity .2s ease-out;
+
+  & svg {
+    width: auto;
+    height: 100%;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      opacity: .6;
+    }
+  }
+`;
+
+const StyledGitHubLink = styled.a`
+  ${promptu.container.box}
+  ${promptu.align.br}
+  margin: 2rem;
+  height: 2rem;
+  transition: opacity .2s ease-out;
+
+  & svg {
+    width: auto;
+    height: 100%;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      opacity: .6;
+    }
+  }
+`

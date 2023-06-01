@@ -1,6 +1,6 @@
-import promptu from 'promptu';
-import React, { ReactNode, SFC } from 'react';
-import styled from 'styled-components';
+import promptu from 'promptu'
+import React, { ReactNode, SFC } from 'react'
+import styled from 'styled-components'
 
 export interface Props {
   children?: ReactNode;
@@ -9,10 +9,8 @@ export interface Props {
 
 const Footer: SFC<Props> = ({ onSettingsButtonClick }) => (
   <StyledRoot>
-    <StyledMonogram href='https://www.andr.mu' dangerouslySetInnerHTML={{ __html: require('!raw-loader!@/assets/images/mu.svg') }}/>
     <nav>
       <button onClick={() => onSettingsButtonClick() } dangerouslySetInnerHTML={{ __html: require('!raw-loader!@/assets/images/icon-settings.svg') }}/>
-      <a dangerouslySetInnerHTML={{ __html: require('!raw-loader!@/assets/images/icon-github.svg') }} href='https://github.com/andrewscwei/flight-monitoring-test'/>
     </nav>
   </StyledRoot>
 );
@@ -32,7 +30,6 @@ const StyledRoot = styled.footer`
     flex-grow: 1;
   }
 
-  nav > a,
   nav > button {
     background: transparent;
     width: 2rem;
@@ -57,19 +54,3 @@ const StyledRoot = styled.footer`
   }
 `;
 
-const StyledMonogram = styled.a`
-  ${promptu.container.box}
-  height: 2rem;
-  transition: opacity .2s ease-out;
-
-  & svg {
-    width: auto;
-    height: 100%;
-  }
-
-  @media (hover: hover) {
-    &:hover {
-      opacity: .6;
-    }
-  }
-`;
