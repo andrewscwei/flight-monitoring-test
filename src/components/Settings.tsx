@@ -257,7 +257,7 @@ const StyledSelect = styled.select`
 const StyledMonogram = styled.a`
   ${promptu.container.box}
   ${promptu.align.bl}
-  margin: 2rem;
+  margin: 2.4rem;
   height: 2rem;
   transition: opacity .2s ease-out;
 
@@ -276,7 +276,7 @@ const StyledMonogram = styled.a`
 const StyledGitHubLink = styled.a`
   ${promptu.container.box}
   ${promptu.align.br}
-  margin: 2rem;
+  margin: 2.4rem;
   height: 2rem;
   transition: opacity .2s ease-out;
 

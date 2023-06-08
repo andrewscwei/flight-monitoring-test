@@ -20,7 +20,7 @@ export default Footer;
 const StyledRoot = styled.footer`
   ${promptu.container.fhcl}
   ${promptu.align.fbl}
-  padding: 2rem;
+  padding: 2.4rem;
   width: 100%;
   position: fixed;
   z-index: 10;
