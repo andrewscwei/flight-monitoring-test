@@ -21,6 +21,8 @@ const StyledRoot = styled.footer`
   ${promptu.container.fhcl}
   ${promptu.align.fbl}
   padding: 2.4rem;
+  padding-right: max(2.4rem, env(safe-area-inset-right));
+  padding-bottom: max(2.4rem, env(safe-area-inset-bottom));
   width: 100%;
   position: fixed;
   z-index: 10;

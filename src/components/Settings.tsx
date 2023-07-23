@@ -258,6 +258,8 @@ const StyledMonogram = styled.a`
   ${promptu.container.box}
   ${promptu.align.bl}
   margin: 2.4rem;
+  margin-left: max(2.4rem, env(safe-area-inset-left));
+  margin-bottom: max(2.4rem, env(safe-area-inset-bottom));
   height: 2rem;
   transition: opacity .2s ease-out;
 
@@ -277,6 +279,8 @@ const StyledGitHubLink = styled.a`
   ${promptu.container.box}
   ${promptu.align.br}
   margin: 2.4rem;
+  margin-right: max(2.4rem, env(safe-area-inset-right));
+  margin-bottom: max(2.4rem, env(safe-area-inset-bottom));
   height: 2rem;
   transition: opacity .2s ease-out;
 

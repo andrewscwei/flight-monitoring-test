@@ -355,6 +355,7 @@ const StyledQuestionLabel = styled.span`
   ${promptu.align.tc}
   ${props => props.theme.title(14, 400)}
   top: calc(3px + 8vh);
+  top: calc(3px + 8vh + env(safe-area-inset-top));
   text-align: center;
   width: 10rem;
   height: auto;
@@ -412,6 +413,7 @@ const StyledTimer = styled.div<any>`
   height: 5px;
   width: 100%;
   background: #fff;
+  top: env(safe-area-inset-top);
   transform-origin: center left;
   visibility: ${props => props.isEnabled ? 'visible' : 'hidden'};
 `;
@@ -420,6 +422,7 @@ const StyledChoices = styled.div`
   ${promptu.align.bc}
   ${promptu.container.fhcc}
   bottom: calc(4vh + 4rem);
+  bottom: calc(4vh + 4rem + env(safe-area-inset-bottom));
 `;
 
 const StyledChoice = styled.button<any>`
