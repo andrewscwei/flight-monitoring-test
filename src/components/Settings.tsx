@@ -221,7 +221,6 @@ const StyledOptions = styled.div`
   ${promptu.container.fvtc}
   width: 100%;
   flex: 1 1 auto;
-  touch-action: none;
   overflow-x: hidden;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;

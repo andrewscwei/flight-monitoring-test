@@ -1,5 +1,5 @@
 {
-  "name": "Flight Monitoring Test",
+  "name": "Flight Monitor",
   "description": "Quick hack job of a flight monitoring test",
   "display": "standalone",
   "icons": [
@@ -28,6 +28,5 @@
   ],
   "theme_color": "#000000",
   "background_color": "#000000",
-  "start_url": "index.html",
   "orientation": "portrait"
 }
