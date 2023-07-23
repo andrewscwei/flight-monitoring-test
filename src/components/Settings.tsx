@@ -158,7 +158,9 @@ class Settings extends PureComponent<Props, State> {
             <h1>{t['settings']}</h1>
             <button dangerouslySetInnerHTML={{ __html: require('!raw-loader!@/assets/images/icon-exit.svg')}} onClick={() => this.props.onSave()}/>
           </header>
-          { Object.keys(config).map((optionType: string, idx: number) => this.renderOption(optionType, `option-${idx}`)) }
+          <StyledOptions>
+            { Object.keys(config).map((optionType: string, idx: number) => this.renderOption(optionType, `option-${idx}`)) }
+          </StyledOptions>
         </div>
         <StyledMonogram href='https://www.andr.mu' dangerouslySetInnerHTML={{ __html: require('!raw-loader!@/assets/images/mu.svg') }}/>
         <StyledGitHubLink dangerouslySetInnerHTML={{ __html: require('!raw-loader!@/assets/images/icon-github.svg') }} href='https://github.com/andrewscwei/flight-monitoring-test'/>
@@ -180,16 +182,15 @@ const StyledRoot = styled.div`
   ${promptu.container.fvcc}
   width: 100%;
   height: 100%;
-  padding: 0 3rem;
-  touch-action: none;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  -webkit-overflow-scrolling: touch;
+  padding: 3rem 3rem;
+  padding-top: max(3rem, env(safe-area-inset-top));
+  padding-bottom: calc(4rem + max(3rem, env(safe-area-inset-bottom)));
 
   > div {
+    ${promptu.container.fvcs}
     width: 100%;
-    max-width: 60rem;
-    height: auto;
+    max-width: 50rem;
+    max-height: 100%;
   }
 
   header {
@@ -198,14 +199,14 @@ const StyledRoot = styled.div`
   }
 
   h1 {
-    ${props => props.theme.title(40)}
+    ${props => props.theme.title(30)}
     color: #fff;
     flex-grow: 1;
   }
 
   button {
-    width: 2.4rem;
-    height: 2.4rem;
+    width: 2rem;
+    height: 2rem;
     transition: opacity .2s ease-out;
 
     @media (hover: hover) {
@@ -216,8 +217,19 @@ const StyledRoot = styled.div`
   }
 `;
 
+const StyledOptions = styled.div`
+  ${promptu.container.fvtc}
+  width: 100%;
+  flex: 1 1 auto;
+  touch-action: none;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+`;
+
 const StyledOption = styled.div`
   ${promptu.container.fvtl}
+  width: 100%;
 
   &:not(:last-child) {
     margin-bottom: 3rem;
@@ -237,15 +249,16 @@ const StyledHRangeSlider = styled(HRangeSlider)<any>`
 
 const StyledSelect = styled.select`
   ${promptu.container.box}
-  ${props => props.theme.text(22)}
-  width: 15rem;
+  ${props => props.theme.text(16)}
+  appearance: none;
+  background: #fff;
+  border-radius: .8rem;
+  color: #000;
   height: 4rem;
   padding: 0 1rem;
-  color: #000;
-  transition: background .2s ease-out;
   text-align: center;
-  background: #fff;
-  border-radius: 0;
+  transition: background .2s ease-out;
+  width: 10rem;
 
   @media (hover: hover) {
     &:hover {
@@ -257,10 +270,10 @@ const StyledSelect = styled.select`
 const StyledMonogram = styled.a`
   ${promptu.container.box}
   ${promptu.align.bl}
-  margin: 2.4rem;
-  margin-left: max(2.4rem, env(safe-area-inset-left));
-  margin-bottom: max(2.4rem, env(safe-area-inset-bottom));
   height: 2rem;
+  margin-bottom: max(2.4rem, env(safe-area-inset-bottom));
+  margin-left: max(2.4rem, env(safe-area-inset-left));
+  margin: 2.4rem;
   transition: opacity .2s ease-out;
 
   & svg {
@@ -272,6 +285,14 @@ const StyledMonogram = styled.a`
     &:hover {
       opacity: .6;
     }
+  }
+
+  &:after {
+    ${promptu.align.tl}
+    width: 6rem;
+    height: 4rem;
+    content: '';
+    transform: translate3d(calc(-50% + 1.7rem), calc(-50% + 1rem), 0);
   }
 `;
 
@@ -293,5 +314,13 @@ const StyledGitHubLink = styled.a`
     &:hover {
       opacity: .6;
     }
+  }
+
+  &:after {
+    ${promptu.align.tl}
+    width: 4rem;
+    height: 4rem;
+    content: '';
+    transform: translate3d(calc(-50% + 1rem), calc(-50% + 1rem), 0);
   }
 `

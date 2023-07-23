@@ -53,6 +53,14 @@ const StyledRoot = styled.footer`
         opacity: .6;
       }
     }
+
+    &:after {
+      ${promptu.align.tl}
+      width: 4rem;
+      height: 4rem;
+      content: '';
+      transform: translate3d(calc(-50% + 1rem), calc(-50% + 1rem), 0);
+    }
   }
 `;
 

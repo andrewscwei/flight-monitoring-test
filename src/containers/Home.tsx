@@ -392,13 +392,14 @@ const StyledGameOver = styled.div`
   button {
     ${promptu.container.fhcl}
     ${props => props.theme.text(22)}
-    width: 15rem;
+    background: ${props => props.theme.purpleColor};
+    border-radius: .8rem;
+    color: #fff;
     height: 4rem;
     padding: 0 1rem;
-    color: #fff;
-    transition: background .2s ease-out;
     text-align: center;
-    background: ${props => props.theme.purpleColor};
+    transition: background .2s ease-out;
+    width: 15rem;
 
     @media (hover: hover) {
       &:hover {
