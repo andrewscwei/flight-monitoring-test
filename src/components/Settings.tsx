@@ -182,7 +182,7 @@ const StyledRoot = styled.div`
   ${promptu.container.fvcc}
   width: 100%;
   height: 100%;
-  padding: 3rem 3rem;
+  padding: 3rem 0;
   padding-top: max(3rem, env(safe-area-inset-top));
   padding-bottom: calc(4rem + max(3rem, env(safe-area-inset-bottom)));
 
@@ -195,6 +195,7 @@ const StyledRoot = styled.div`
 
   header {
     ${promptu.container.fhcl}
+    padding: 0 3rem;
     margin-bottom: 3rem;
   }
 
@@ -219,6 +220,7 @@ const StyledRoot = styled.div`
 
 const StyledOptions = styled.div`
   ${promptu.container.fvtc}
+  padding: 1rem 3rem;
   width: 100%;
   flex: 1 1 auto;
   overflow-x: hidden;
@@ -227,7 +229,7 @@ const StyledOptions = styled.div`
 `;
 
 const StyledOption = styled.div`
-  ${promptu.container.fvtl}
+  ${promptu.container.fhcl}
   width: 100%;
 
   &:not(:last-child) {
@@ -235,15 +237,18 @@ const StyledOption = styled.div`
   }
 
   h2 {
-    ${props => props.theme.title(16)}
+    ${props => props.theme.title(14)}
     color: #fff;
-    margin-bottom: 1.5rem;
+    flex: 0 0 auto;
+    text-align: right;
+    width: 9rem;
   }
 `;
 
 const StyledHRangeSlider = styled(HRangeSlider)<any>`
+  flex: 1 1 auto;
+  margin: 0 0 0 2rem;
   width: calc(100% - ${10}px);
-  margin: 0 0 2rem .5rem;
 `;
 
 const StyledSelect = styled.select`
@@ -254,6 +259,7 @@ const StyledSelect = styled.select`
   border-radius: .8rem;
   color: #000;
   height: 4rem;
+  margin: 0 0 0 2rem;
   padding: 0 1rem;
   text-align: center;
   transition: background .2s ease-out;
