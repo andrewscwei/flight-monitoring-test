@@ -43,7 +43,7 @@ export interface State {
 
 class Home extends PureComponent<Props, State> {
   state = {
-    areSettingsVisible: true,
+    areSettingsVisible: false,
     currAnswer: 0,
     index: -1,
     isGameOver: false,
