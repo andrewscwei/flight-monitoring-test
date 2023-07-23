@@ -1,7 +1,6 @@
 {
   "name": "flight-monitoring-test",
   "version": "0.12.0",
-  "description": "Quick hack job of a flight monitoring test",
   "private": true,
   "license": "MIT",
   "scripts": {

@@ -7,11 +7,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export default {
-  // Version number.
-  version: require('../package.json').version,
-
-  // Build number.
-  buildNumber: process.env.BUILD_NUMBER || 0,
+  // App version.
+  version: `v${require('../package.json').version}+build.${process.env.BUILD_NUMBER || '0'}`,
 
   // HTML metadata.
   meta: {
@@ -19,13 +16,10 @@ export default {
     title: 'Flight Monitoring Test',
 
     // Short description of the app.
-    description: require('../package.json').description,
-
-    // Search keywords.
-    keywords: require('../package.json').keywords,
+    description: 'Quick hack job of a flight monitoring test',
 
     // App URL.
-    url: require('../package.json').homepage,
+    url: 'https://monitor.andr.mu',
   },
 
   // Google Analytics ID (i.e. UA-XXXXXXXX-1)
