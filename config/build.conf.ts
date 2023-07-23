@@ -3,14 +3,13 @@
  *       `development` and `production` environments.
  */
 
-import CopyPlugin from 'copy-webpack-plugin';
-import HTMLPlugin from 'html-webpack-plugin';
-import path from 'path';
-import PrerenderSPAPlugin, { PuppeteerRenderer as Renderer } from 'prerender-spa-plugin';
-import { Configuration, DefinePlugin, EnvironmentPlugin, IgnorePlugin, Plugin } from 'webpack';
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
-import appConfig from './app.conf';
-import { getLocaleDataFromDir, getLocalesFromDir, getLocalizedRoutesFromDir, getTranslationsFromDir } from './utils';
+import CopyPlugin from 'copy-webpack-plugin'
+import HTMLPlugin from 'html-webpack-plugin'
+import path from 'path'
+import { Configuration, DefinePlugin, EnvironmentPlugin, IgnorePlugin, Plugin } from 'webpack'
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+import appConfig from './app.conf'
+import { getLocaleDataFromDir, getLocalesFromDir, getLocalizedRoutesFromDir, getTranslationsFromDir } from './utils'
 
 const isDev: boolean = process.env.NODE_ENV === 'development';
 const useBundleAnalyzer: boolean = (!isDev && appConfig.build.analyzer);
@@ -63,14 +62,6 @@ const config: Configuration = {
     new EnvironmentPlugin({
       NODE_ENV: 'production',
     }),
-    // new HappyPack({
-    //   id: 'ts',
-    //   threads: 2,
-    //   loaders: [{
-    //     path: 'ts-loader',
-    //     query: { happyPackMode: true },
-    //   }],
-    // }),
     new DefinePlugin({
       __APP_CONFIG__: JSON.stringify(appConfig),
       __INTL_CONFIG__: JSON.stringify({
@@ -97,28 +88,6 @@ const config: Configuration = {
     ],
     ...!useBundleAnalyzer ? [] : [
       new BundleAnalyzerPlugin(),
-    ],
-    ...isDev ? [] : [
-      new PrerenderSPAPlugin({
-        staticDir: outputDir,
-        routes: [
-          '/',
-          '/404',
-        ],
-        // Optional minification.
-        minify: {
-          collapseBooleanAttributes: true,
-          collapseWhitespace: true,
-          decodeEntities: true,
-          keepClosingSlash: true,
-          sortAttributes: true,
-        },
-        renderer: new Renderer({
-          renderAfterTime: 100,
-          injectProperty: '__PRERENDERING__',
-          inject: {},
-        }),
-      }),
     ],
   ] as Plugin[],
   ...!isDev ? {} : {
