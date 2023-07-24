@@ -340,8 +340,9 @@ const StyledRoot = styled.div`
   ${promptu.container.fvcc}
   font-family: ${props => props.theme.font};
   height: 100%;
-  width: 100%;
+  overflow: hidden;
   perspective: 80rem;
+  width: 100%;
 `;
 
 const StyledOverlay = styled.div<any>`
