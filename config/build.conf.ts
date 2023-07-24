@@ -7,12 +7,10 @@ import CopyPlugin from 'copy-webpack-plugin'
 import HTMLPlugin from 'html-webpack-plugin'
 import path from 'path'
 import { Configuration, DefinePlugin, EnvironmentPlugin, IgnorePlugin, Plugin } from 'webpack'
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import appConfig from './app.conf'
-import { getLocaleDataFromDir, getLocalesFromDir, getLocalizedRoutesFromDir, getTranslationsFromDir } from './utils'
+import { getLocaleDataFromDir, getLocalesFromDir, getTranslationsFromDir } from './utils'
 
 const isDev: boolean = process.env.NODE_ENV === 'development';
-const useBundleAnalyzer: boolean = (!isDev && appConfig.build.analyzer);
 const cwd: string = path.join(__dirname, '../');
 const inputDir: string = path.join(cwd, 'src');
 const outputDir: string = path.join(cwd, 'build');
@@ -70,7 +68,6 @@ const config: Configuration = {
         locales,
         dict: getTranslationsFromDir(localesDir, locales),
       }),
-      __ROUTES_CONFIG__: JSON.stringify(getLocalizedRoutesFromDir(path.join(inputDir, 'containers'), locales)),
     }),
     new HTMLPlugin({
       appConfig,
@@ -85,9 +82,6 @@ const config: Configuration = {
     }),
     ...isDev ? [] : [
       new IgnorePlugin(/^.*\/config\/.*$/),
-    ],
-    ...!useBundleAnalyzer ? [] : [
-      new BundleAnalyzerPlugin(),
     ],
   ] as Plugin[],
   ...!isDev ? {} : {

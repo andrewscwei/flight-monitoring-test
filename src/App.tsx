@@ -1,21 +1,23 @@
-import Footer from '@/components/Footer';
-import Settings, { defaultOptions, SettingsOptions } from '@/components/Settings';
-import Viewport from '@/components/Viewport';
-import { AppState } from '@/store';
-import theme from '@/styles/theme';
-import { styleByTransitionState } from '@/styles/utils';
-import anime from 'animejs';
-import debug from 'debug';
-import _ from 'lodash';
-import promptu from 'promptu';
-import React, { createRef, Fragment, PureComponent } from 'react';
-import { connect } from 'react-redux';
-import { Transition } from 'react-transition-group';
-import { TransitionStatus } from 'react-transition-group/Transition';
-import { Action, bindActionCreators, Dispatch } from 'redux';
-import styled from 'styled-components';
+import Footer from '@/components/Footer'
+import Settings, { defaultOptions, SettingsOptions } from '@/components/Settings'
+import Viewport from '@/components/Viewport'
+import { AppState } from '@/store'
+import globalStyles from '@/styles/global'
+import theme from '@/styles/theme'
+import { styleByTransitionState } from '@/styles/utils'
+import anime from 'animejs'
+import debug from 'debug'
+import _ from 'lodash'
+import promptu from 'promptu'
+import React, { createRef, Fragment, PureComponent } from 'react'
+import { connect } from 'react-redux'
+import { Transition } from 'react-transition-group'
+import { TransitionStatus } from 'react-transition-group/Transition'
+import { Action, bindActionCreators, Dispatch } from 'redux'
+import styled, * as styledComponents from 'styled-components'
 
 const log = debug('app');
+const { __DO_NOT_USE_OR_YOU_WILL_BE_HAUNTED_BY_SPOOKY_GHOSTS: sc, createGlobalStyle, ThemeProvider } = styledComponents as any;
 
 const DEFAULT_DIFFICULTY = 6;
 
@@ -41,7 +43,7 @@ export interface State {
   settings: SettingsOptions;
 }
 
-class Home extends PureComponent<Props, State> {
+class App extends PureComponent<Props, State> {
   state = {
     areSettingsVisible: false,
     currAnswer: 0,
@@ -60,6 +62,11 @@ class Home extends PureComponent<Props, State> {
   interval?: number;
 
   componentDidMount() {
+    if (window.__PRERENDERING__) {
+      const styles = sc.StyleSheet.instance.toHTML();
+      document.getElementsByTagName('head')[0].innerHTML += styles;
+    }
+
     if (!this.state.areSettingsVisible) this.next();
 
     window.addEventListener('resize', this.onWindowResize);
@@ -265,47 +272,52 @@ class Home extends PureComponent<Props, State> {
     const { t } = this.props;
 
     return (
-      <StyledRoot ref={this.nodeRefs.root}>
-        <StyledTimer ref={this.nodeRefs.timer} isEnabled={!this.state.isGameOver}/>
-        { this.state.isGameOver &&
-          <Fragment>
-            <StyledGameOver>
-              <h1>{t['game-over']}</h1>
-              <h2><strong>{this.state.score}</strong> / {this.state.settings['num-questions']}</h2>
-              <button onClick={() => this.next()}>{t['retry']}</button>
-            </StyledGameOver>
-          </Fragment>
-          ||
-          <Fragment>
-            { this.state.index > -1 &&
-              <StyledQuestionLabel>{t['stage']} <strong>{this.state.index + 1}</strong></StyledQuestionLabel>
+      <ThemeProvider theme={theme}>
+        <>
+          <GlobalStyles/>
+          <StyledRoot ref={this.nodeRefs.root}>
+            <StyledTimer ref={this.nodeRefs.timer} isEnabled={!this.state.isGameOver}/>
+            { this.state.isGameOver &&
+              <Fragment>
+                <StyledGameOver>
+                  <h1>{t['game-over']}</h1>
+                  <h2><strong>{this.state.score}</strong> / {this.state.settings['num-questions']}</h2>
+                  <button onClick={() => this.next()}>{t['retry']}</button>
+                </StyledGameOver>
+              </Fragment>
+              ||
+              <Fragment>
+                { this.state.index > -1 &&
+                  <StyledQuestionLabel>{t['stage']} <strong>{this.state.index + 1}</strong></StyledQuestionLabel>
+                }
+                <StyledViewport
+                  key={this.state.index}
+                  count={this.state.currAnswer}
+                  dotRadius={10}
+                  radius={this.getViewportRadius()}
+                  speed={this.state.settings['speed']}
+                />
+                {this.state.index > -1 && this.renderChoices()}
+              </Fragment>
             }
-            <StyledViewport
-              key={this.state.index}
-              count={this.state.currAnswer}
-              dotRadius={10}
-              radius={this.getViewportRadius()}
-              speed={this.state.settings['speed']}
-            />
-            {this.state.index > -1 && this.renderChoices()}
-          </Fragment>
-        }
-        <Footer onSettingsButtonClick={this.openSettings}/>
-        <Transition in={this.state.areSettingsVisible} timeout={0}>
-          {(state: TransitionStatus) => (
-            <Fragment>
-              <StyledOverlay
-                transitionState={state}
-              />
-              <StyledSettings
-                transitionState={state}
-                onSave={this.closeSettings}
-                onChange={this.updateSettings}
-              />
-            </Fragment>
-          )}
-        </Transition>
-      </StyledRoot>
+            <Footer onSettingsButtonClick={this.openSettings}/>
+            <Transition in={this.state.areSettingsVisible} timeout={0}>
+              {(state: TransitionStatus) => (
+                <Fragment>
+                  <StyledOverlay
+                    transitionState={state}
+                  />
+                  <StyledSettings
+                    transitionState={state}
+                    onSave={this.closeSettings}
+                    onChange={this.updateSettings}
+                  />
+                </Fragment>
+              )}
+            </Transition>
+          </StyledRoot>
+        </>
+      </ThemeProvider>
     );
   }
 }
@@ -317,7 +329,11 @@ export default connect(
   (dispatch: Dispatch<Action>): DispatchProps => bindActionCreators({
 
   }, dispatch),
-)(Home);
+)(App);
+
+const GlobalStyles = createGlobalStyle`
+  ${globalStyles}
+`;
 
 const StyledRoot = styled.div`
   ${promptu.align.tl}

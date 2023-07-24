@@ -7,8 +7,6 @@ declare const __INTL_CONFIG__: {
   dict: Readonly<TranslationDataDict>;
 };
 
-declare const __ROUTES_CONFIG__: RouteData[];
-
 interface TranslationData {
   [key: string]: string;
 }

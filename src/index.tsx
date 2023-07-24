@@ -2,13 +2,12 @@
  * @file Entry file.
  */
 
-import App from '@/containers/App';
-import store from '@/store';
-import React from 'react';
-import { render } from 'react-dom';
-import { IntlProvider } from 'react-intl';
-import { connect, Provider } from 'react-redux';
-import { BrowserRouter as Router, Route, RouteComponentProps } from 'react-router-dom';
+import store from '@/store'
+import React from 'react'
+import { render } from 'react-dom'
+import { IntlProvider } from 'react-intl'
+import { connect, Provider } from 'react-redux'
+import App from './App'
 
 const ConnectedIntlProvider = connect((state: any) => ({
   key: state.intl.locale,
@@ -23,11 +22,7 @@ if (process.env.NODE_ENV === 'development') {
 render(
   <Provider store={store}>
     <ConnectedIntlProvider>
-      <Router>
-        <Route render={(routeProps: RouteComponentProps<any>) => (
-          <App route={routeProps}/>
-        )}/>
-      </Router>
+      <App/>
     </ConnectedIntlProvider>
   </Provider>,
   document.getElementById('app'),

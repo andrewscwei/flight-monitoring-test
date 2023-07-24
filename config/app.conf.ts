@@ -74,9 +74,5 @@ export default {
 
     // Specifies whether JavaScript and CSS source maps should be generated.
     sourceMap: true,
-
-    // Specifies whether a bundle analyzer report should be generated at the end
-    // of the build process.
-    analyzer: process.env.ANALYZE_BUNDLE === 'true' ? true : false,
   },
 };
