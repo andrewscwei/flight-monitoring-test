@@ -28,6 +28,5 @@
   ],
   "name": "Flight Monitor",
   "orientation": "portrait",
-  "start_url": "index.html",
   "theme_color": "#111111"
 }
