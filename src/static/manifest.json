@@ -1,33 +1,33 @@
 {
-  "name": "Flight Monitor",
+  "background_color": "#111111",
   "description": "Quick hack job of a flight monitoring test",
   "display": "standalone",
   "icons": [
     {
-      "src": "/app-icon-192.png",
       "sizes": "192x192",
+      "src": "/app-icon-192.png",
       "type": "image/png"
     },
     {
-      "src": "/app-icon-512.png",
       "sizes": "512x512",
+      "src": "/app-icon-512.png",
       "type": "image/png"
     },
     {
       "purpose": "maskable",
-      "src": "/app-icon-192.png",
       "sizes": "192x192",
+      "src": "/app-icon-192.png",
       "type": "image/png"
     },
     {
       "purpose": "maskable",
-      "src": "/app-icon-512.png",
       "sizes": "512x512",
+      "src": "/app-icon-512.png",
       "type": "image/png"
     }
   ],
-  "theme_color": "#000000",
-  "background_color": "#000000",
+  "name": "Flight Monitor",
+  "orientation": "portrait",
   "start_url": "index.html",
-  "orientation": "portrait"
+  "theme_color": "#111111"
 }
