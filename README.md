@@ -1,4 +1,4 @@
-# Flight Monitoring Test [![Netlify Status](https://img.shields.io/netlify/92562d34-72be-4641-bfe2-f1d30e8eaa29)](https://app.netlify.com/sites/flight-monitoring-test/deploys)
+# Flight Monitoring Test [![CD](https://github.com/andrewscwei/flight-monitoring-test/workflows/CD/badge.svg)](https://github.com/andrewscwei/flight-monitoring-test/actions?query=workflow%3ACD)
 
 Quick hack job of a flight monitoring test.
 
